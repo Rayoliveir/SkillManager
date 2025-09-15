@@ -1,6 +1,6 @@
-import './styles.css'
+import './styles.css';
 // import PaginaInicial from '../../components/PaginaInicial'
-import Header from '../../components/header'
+import Header from '../../components/header';
 
 
 function Dashboard() {

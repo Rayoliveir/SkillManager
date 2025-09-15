@@ -1,16 +1,21 @@
-import './App.css';
-import Dashboard from '../src/pages/dashboard';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Header from './Header';
+import Home from './pages/Home';
+// import Sobre from './pages/Sobre';
+// import FaleConosco from './pages/FaleConosco';
+// import Contato from './pages/Contato';
 
 function App() {
   return (
-   <Router>
+    <BrowserRouter>
+      <Header />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        {/* <Route path="/cadastro" element={<QuemSomos />} /> */}
-        {/* <Route path="/usuarios" element={<FaleConosco />} /> */}
-        {/* <Route path="/usuarios" element={<Login />} /> */}
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/sobre" element={<Sobre />} /> */}
+        {/* <Route path="/fale-conosco" element={<FaleConosco />} /> */}
+        {/* <Route path="/contato" element={<Contato />} /> */}
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
