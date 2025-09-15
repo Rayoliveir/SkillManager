@@ -1,11 +1,11 @@
 import './styles.css'
-import PaginaInicial from
+import PaginaInicial from '../../components/PaginaInicial'
 
 
 function Dashboard() {
     return (
         <div className="pag_inicial-container">
-            <Dashboard />
+            <PaginaInicial />
         </div>
     );
 }
