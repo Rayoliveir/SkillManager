@@ -7,7 +7,12 @@ main {
 }
 
 .escolha-cadastro {
-    gap: 20rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 5em;
+    gap: 9rem;
 }
 
 .escolha-cadastro .titulo {
@@ -38,21 +43,32 @@ main {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-color: #FCF5EA;
+    background-color: #ffffff;
     width: 300px;
     height: 350px;
     border-radius: 20px;
+    box-shadow: 10px 10px 20px 0 rgba(0, 0, 0, 0.1);
+   
+}
+
+.card-escolha:hover {
+    background: linear-gradient(135deg, #ffac3f71 0%, #ffe18d6b 100%);
+    box-shadow: 20px 20px 30px 0 rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    transform: scale(1.02);
 }
 
 .card-escolha div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 25px;
     background: black;
     width: 50px;
     height: 50px;
     border-radius: 10px;
     border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     margin-bottom: 20px;
 }
 
@@ -77,16 +93,18 @@ main {
 
 .card-escolha button {
     /* background: #131C2F; */
-    background: #FCF5EA;
+    background: #030022;
+    color: white;
     width: 230px;
-    height: 30px;
+    height: 50px;
     border: none;
     border-radius: 10px;
     font-size: 15px;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: 50;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .card-escolha button:hover {
-    background-color: #9FBFF1;
+    transform: scale(1.02);
+
 }

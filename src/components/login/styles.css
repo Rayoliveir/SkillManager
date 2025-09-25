@@ -10,85 +10,116 @@
 
 .gilson {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    flex-direction: column;
-    background: #131C2F;
-    width: 500px;
-    height: 500px;
+    background: linear-gradient(to right, #fff7e6, rgba(1, 1, 58, 0.13), #fff7e6);
+    /* background: #fff7e6; */
+    width: 400px;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+    gap: 10px;
     font-family: skillFontNormal;
     font-weight: 50;
-    gap: 10px;
-    border-radius: 20px;
-}
-
-.gilson h2 {
-    color: #EAD1B9;
-    font-size: 2.2rem;
-    margin: 0 0 0 0;
-}
-
-.gilson p {
-    color: #EAD1B9;
-    font-size: 15px;
 }
 
 .logo-skill {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
     flex-direction: column;
-    margin: 40px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
 .logo-skill img {
-    width: 50px;
+    width: 60px;
     height: 50px;
+}
+
+.logo-skill h2 {
+    color: #1e1e1e;
+    font-size: 1.5rem;
+    margin: 10px 0 5px;
+}
+
+.logo-skill p {
+    font-size: 14px;
+    color: #666;
+}
+
+.gilson p {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
 }
 
 .form-login {
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
     gap: 20px;
-    box-shadow: black;
+    width: 100%;
 }
 
 .form-login label {
-    color: #EAD1B9;
+    color: rgb(0, 0, 46);
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
 }
 
+
 .form-login input {
-    width: 22rem;
-    height: 30px;
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
     border-radius: 10px;
-    border: none;  
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.form-login input:focus {
+    border-color: #ff8c00;
+    outline: none;
 }
 
 .form-login input:hover {
-    background: #dbdbdb;
+    background: #f0f0f0;
 }
 
-
 .form-login button {
-    background: #EAD1B9;
-    width: 17rem;
-    height: 30px;
+    background: #131C2F ;
+    color: white;
+    width: 100%;
+    height: 50px;
     font-family: skillFontItalico;
+    font-size: 20px;
     cursor: pointer;
     border: none;
     border-radius: 10px;
+    transition: background 0.3s ease;
 }
 
 .form-login button:hover {
-    background: #5D82AD;
+    /* background: #e07b00; */
+    transform: scale(1.05); 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
+
+.form-login button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* .form-login button:hover {
+    background: #e07b00;
+} */
 
 .form-login a {
     font-family: skillFontItalico;
     text-decoration: underline;
+    color: #ff8c00;
     cursor: pointer;
-    color: white;
 }
-
