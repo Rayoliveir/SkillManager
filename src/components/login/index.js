@@ -69,7 +69,7 @@ function Login() {
 
 
                 <form onSubmit={handleLogin} className="form-login">
-                    <label>E-mail: <br />
+                    <label>E-mail ou CNPJ: <br />
                         <input
                             type="email"
                             name="email"
