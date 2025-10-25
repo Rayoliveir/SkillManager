@@ -1,6 +1,6 @@
 package com.senai.skillmanager.model.estagiario;
 
-import com.senai.skillmanager.model.Empresa;
+import com.senai.skillmanager.model.empresa.Empresa;
 import com.senai.skillmanager.model.Endereco;
 import com.senai.skillmanager.model.Genero;
 import jakarta.persistence.*;

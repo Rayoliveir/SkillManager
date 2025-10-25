@@ -4,7 +4,7 @@ import com.senai.skillmanager.model.Endereco;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "tab_faculdades")
@@ -23,25 +23,18 @@ public class Faculdade {
     private String cnpj;
 
     @Column(nullable = false)
-    @NotBlank(message = "O telefone é obrigatório.")
     @Pattern(regexp = "\\d{10,11}", message = "O telefone deve ter 10 ou 11 dígitos.")
     private String telefone;
-
-    @Column(nullable = false)
-    @NotBlank(message = "O email é obrigatório.")
-    private String email;
 
     @Column
     private String site;
 
-    @Column(nullable = false)
-    @NotBlank(message = "A senha é obrigatória.")
-    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres.")
-    private String senha;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
+
+    @OneToMany(mappedBy = "faculdade")
+    private List<Coordenador> coordenadores;
 
     public Faculdade() {
     }
@@ -78,14 +71,6 @@ public class Faculdade {
         this.telefone = telefone;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getSite() {
         return site;
     }
@@ -94,19 +79,19 @@ public class Faculdade {
         this.site = site;
     }
 
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
     public Endereco getEndereco() {
         return endereco;
     }
 
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
+    }
+
+    public List<Coordenador> getCoordenadores() {
+        return coordenadores;
+    }
+
+    public void setCoordenadores(List<Coordenador> coordenadores) {
+        this.coordenadores = coordenadores;
     }
 }

@@ -1,7 +1,7 @@
 package com.senai.skillmanager.service;
 
 import com.senai.skillmanager.dto.*;
-import com.senai.skillmanager.model.Empresa;
+import com.senai.skillmanager.model.empresa.Empresa;
 import com.senai.skillmanager.model.Endereco;
 import com.senai.skillmanager.model.estagiario.DadosAcademicos;
 import com.senai.skillmanager.model.estagiario.Estagiario;

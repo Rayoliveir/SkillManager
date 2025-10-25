@@ -22,18 +22,19 @@ public class FaculdadeController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('FACULDADE', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()") // Qualquer usuário autenticado pode listar faculdades
     public ResponseEntity<List<FaculdadeResponseDTO>> listarTodos() {
         return ResponseEntity.ok(faculdadeService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('FACULDADE', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()") // Qualquer usuário autenticado pode ver uma faculdade
     public ResponseEntity<FaculdadeResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(faculdadeService.buscarPorId(id));
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')") // Apenas Admin pode criar uma faculdade manualmente
     public ResponseEntity<FaculdadeResponseDTO> salvar(@Valid @RequestBody FaculdadeDTO dto) {
         FaculdadeResponseDTO faculdadeSalva = faculdadeService.salvar(dto);
         return ResponseEntity
@@ -42,7 +43,7 @@ public class FaculdadeController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('FACULDADE')")
+    @PreAuthorize("hasRole('ADMIN')") // Apenas Admin pode atualizar a instituição
     public ResponseEntity<FaculdadeResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody FaculdadeDTO dto) {
         FaculdadeResponseDTO faculdadeAtualizada = faculdadeService.atualizar(id, dto);
         return ResponseEntity.ok(faculdadeAtualizada);

@@ -2,7 +2,7 @@ package com.senai.skillmanager.dto;
 
 import com.senai.skillmanager.model.estagiario.Estagiario;
 import com.senai.skillmanager.model.estagiario.TipoEstagio;
-import com.senai.skillmanager.model.funcionario.Funcionario;
+import com.senai.skillmanager.model.empresa.Supervisor;
 import java.time.LocalDate;
 
 public class DadosEstagioResponseDTO {
@@ -14,7 +14,7 @@ public class DadosEstagioResponseDTO {
     private LocalDate dataInicio;
     private LocalDate dataTermino;
     private String observacoes;
-    private Funcionario supervisor;
+    private Supervisor supervisor;
     private Estagiario estagiario;
 
     public DadosEstagioResponseDTO() {
@@ -86,11 +86,11 @@ public class DadosEstagioResponseDTO {
         this.observacoes = observacoes;
     }
 
-    public Funcionario getSupervisor() {
+    public Supervisor getSupervisor() {
         return supervisor;
     }
 
-    public void setSupervisor(Funcionario supervisor) {
+    public void setSupervisor(Supervisor supervisor) {
         this.supervisor = supervisor;
     }
 

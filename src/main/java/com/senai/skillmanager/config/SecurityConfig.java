@@ -36,6 +36,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        // Mantendo sua configuração original
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
@@ -47,16 +48,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults()) // Usa o seu Bean 'corsConfigurationSource'
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Libera TODAS as rotas de cadastro (não precisam de autenticação)
-                        .requestMatchers(HttpMethod.POST, "/empresas", "/faculdades", "/funcionarios", "/estagiarios").permitAll()
-                        // EXIGE autenticação para TODO o resto, incluindo o login
+
+                        // --- ESTA É A MUDANÇA CRUCIAL ---
+                        // Libera o endpoint de erro para vermos a mensagem real
+                        .requestMatchers("/error").permitAll()
+                        // ------------------------------------
+
+                        // Libera os endpoints de CADASTRO (Fluxo A/B)
+                        .requestMatchers(HttpMethod.POST, "/supervisores").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/coordenadores").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/estagiarios").permitAll()
+
+                        // Libera o endpoint de LOGIN
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
+
+                        // Exige autenticação para todas as outras requisições
                         .anyRequest().authenticated()
                 )
-                // REABILITAMOS o método de autenticação simples e direto. Ele cuidará de tudo.
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();

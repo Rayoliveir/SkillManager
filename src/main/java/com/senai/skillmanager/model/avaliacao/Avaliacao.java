@@ -1,7 +1,7 @@
 package com.senai.skillmanager.model.avaliacao;
 
 import com.senai.skillmanager.model.estagiario.Estagiario;
-import com.senai.skillmanager.model.funcionario.Funcionario;
+import com.senai.skillmanager.model.empresa.Supervisor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -52,7 +52,7 @@ public class Avaliacao {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "supervisor_id", nullable = false)
-    private Funcionario supervisor;
+    private Supervisor supervisor;
 
     @NotNull
     @ManyToOne
@@ -62,7 +62,7 @@ public class Avaliacao {
     public Avaliacao() {
     }
 
-    public Avaliacao(Long id, String titulo, String feedbackPositivo, String pontosDeMelhoria, Integer notaFrequencia, Integer notaDesempenho, Integer notaOrganizacao, Integer notaParticipacao, Integer notaComportamento, LocalDate dataAvaliacao, Funcionario supervisor, Estagiario estagiario) {
+    public Avaliacao(Long id, String titulo, String feedbackPositivo, String pontosDeMelhoria, Integer notaFrequencia, Integer notaDesempenho, Integer notaOrganizacao, Integer notaParticipacao, Integer notaComportamento, LocalDate dataAvaliacao, Supervisor supervisor, Estagiario estagiario) {
         this.id = id;
         this.titulo = titulo;
         this.feedbackPositivo = feedbackPositivo;
@@ -157,11 +157,11 @@ public class Avaliacao {
         this.dataAvaliacao = dataAvaliacao;
     }
 
-    public Funcionario getSupervisor() {
+    public Supervisor getSupervisor() {
         return supervisor;
     }
 
-    public void setSupervisor(Funcionario supervisor) {
+    public void setSupervisor(Supervisor supervisor) {
         this.supervisor = supervisor;
     }
 

@@ -1,6 +1,6 @@
 package com.senai.skillmanager.model.estagiario;
 
-import com.senai.skillmanager.model.funcionario.Funcionario;
+import com.senai.skillmanager.model.empresa.Supervisor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -42,7 +42,7 @@ public class DadosEstagio {
 
     @ManyToOne
     @JoinColumn(name = "supervisor_id", nullable = false)
-    private Funcionario supervisor;
+    private Supervisor supervisor;
 
     @Column(columnDefinition = "TEXT")
     private String observacoes;
@@ -111,11 +111,11 @@ public class DadosEstagio {
         this.dataTermino = dataTermino;
     }
 
-    public Funcionario getSupervisor() {
+    public Supervisor getSupervisor() {
         return supervisor;
     }
 
-    public void setSupervisor(Funcionario supervisor) {
+    public void setSupervisor(Supervisor supervisor) {
         this.supervisor = supervisor;
     }
 

@@ -23,18 +23,19 @@ public class EmpresaController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('EMPRESA', 'ADMIN', 'FUNCIONARIO', 'FACULDADE')")
+    @PreAuthorize("isAuthenticated()") // Qualquer usuário autenticado pode listar empresas
     public ResponseEntity<List<EmpresaResponseDTO>> listarTodos() {
         return ResponseEntity.ok(empresaService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('EMPRESA', 'ADMIN', 'FUNCIONARIO', 'FACULDADE')")
+    @PreAuthorize("isAuthenticated()") // Qualquer usuário autenticado pode ver uma empresa
     public ResponseEntity<EmpresaResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(empresaService.buscarPorId(id));
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')") // Apenas Admin pode criar uma empresa manualmente
     public ResponseEntity<EmpresaResponseDTO> salvar(@Valid @RequestBody EmpresaDTO dto) {
         EmpresaResponseDTO empresaSalva = empresaService.salvar(dto);
         return ResponseEntity
@@ -43,7 +44,7 @@ public class EmpresaController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('EMPRESA')")
+    @PreAuthorize("hasRole('ADMIN')") // Apenas Admin pode atualizar os dados da instituição
     public ResponseEntity<EmpresaResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody EmpresaDTO dto) {
         EmpresaResponseDTO empresaAtualizada = empresaService.atualizar(id, dto);
         return ResponseEntity.ok(empresaAtualizada);

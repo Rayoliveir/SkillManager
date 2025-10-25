@@ -4,10 +4,10 @@ import com.senai.skillmanager.dto.AvaliacaoDTO;
 import com.senai.skillmanager.dto.AvaliacaoResponseDTO;
 import com.senai.skillmanager.model.avaliacao.Avaliacao;
 import com.senai.skillmanager.model.estagiario.Estagiario;
-import com.senai.skillmanager.model.funcionario.Funcionario;
+import com.senai.skillmanager.model.empresa.Supervisor;
 import com.senai.skillmanager.repository.AvaliacaoRepository;
 import com.senai.skillmanager.repository.EstagiarioRepository;
-import com.senai.skillmanager.repository.FuncionarioRepository;
+import com.senai.skillmanager.repository.SupervisorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,23 +19,23 @@ import java.util.stream.Collectors;
 public class AvaliacaoService {
 
     private final AvaliacaoRepository avaliacaoRepository;
-    private final FuncionarioRepository funcionarioRepository;
+    private final SupervisorRepository supervisorRepository;
     private final EstagiarioRepository estagiarioRepository;
     // Precisamos dos outros services para converter Entidades para ResponseDTOs
-    private final FuncionarioService funcionarioService;
+    private final SupervisorService supervisorService;
     private final EstagiarioService estagiarioService;
 
-    public AvaliacaoService(AvaliacaoRepository avaliacaoRepository, FuncionarioRepository funcionarioRepository, EstagiarioRepository estagiarioRepository, FuncionarioService funcionarioService, EstagiarioService estagiarioService) {
+    public AvaliacaoService(AvaliacaoRepository avaliacaoRepository, SupervisorRepository supervisorRepository, EstagiarioRepository estagiarioRepository, SupervisorService supervisorService, EstagiarioService estagiarioService) {
         this.avaliacaoRepository = avaliacaoRepository;
-        this.funcionarioRepository = funcionarioRepository;
+        this.supervisorRepository = supervisorRepository;
         this.estagiarioRepository = estagiarioRepository;
-        this.funcionarioService = funcionarioService;
+        this.supervisorService = supervisorService;
         this.estagiarioService = estagiarioService;
     }
 
     @Transactional
     public AvaliacaoResponseDTO salvar(AvaliacaoDTO dto) {
-        Funcionario supervisor = funcionarioRepository.findById(dto.getSupervisorId())
+        Supervisor supervisor = supervisorRepository.findById(dto.getSupervisorId())
                 .orElseThrow(() -> new RuntimeException("Supervisor não encontrado com ID: " + dto.getSupervisorId()));
 
         Estagiario estagiario = estagiarioRepository.findById(dto.getEstagiarioId())
@@ -82,7 +82,7 @@ public class AvaliacaoService {
         dto.setDataAvaliacao(avaliacao.getDataAvaliacao());
 
         // Reutiliza a lógica de conversão que já existe nos outros services
-        dto.setSupervisor(funcionarioService.buscarPorId(avaliacao.getSupervisor().getId()));
+        dto.setSupervisor(supervisorService.buscarPorId(avaliacao.getSupervisor().getId()));
         dto.setEstagiario(estagiarioService.buscarPorId(avaliacao.getEstagiario().getId()));
 
         return dto;

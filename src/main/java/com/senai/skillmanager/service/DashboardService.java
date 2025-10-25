@@ -2,11 +2,11 @@ package com.senai.skillmanager.service;
 
 import com.senai.skillmanager.dto.DashboardEstagiarioDTO;
 import com.senai.skillmanager.dto.EstagiarioResponseDTO;
-import com.senai.skillmanager.model.faculdade.Faculdade;
-import com.senai.skillmanager.model.funcionario.Funcionario;
+import com.senai.skillmanager.model.faculdade.Coordenador; // <-- MUDANÇA
+import com.senai.skillmanager.model.empresa.Supervisor;
 import com.senai.skillmanager.repository.EstagiarioRepository;
-import com.senai.skillmanager.repository.FaculdadeRepository;
-import com.senai.skillmanager.repository.FuncionarioRepository;
+import com.senai.skillmanager.repository.CoordenadorRepository; // <-- MUDANÇA
+import com.senai.skillmanager.repository.SupervisorRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +16,19 @@ import java.util.stream.Collectors;
 @Service
 public class DashboardService {
 
-    private final FuncionarioRepository funcionarioRepository;
-    private final FaculdadeRepository faculdadeRepository;
+    private final SupervisorRepository supervisorRepository;
+    private final CoordenadorRepository coordenadorRepository; // <-- MUDANÇA
     private final EstagiarioRepository estagiarioRepository;
     private final EstagiarioService estagiarioService;
     private final AvaliacaoService avaliacaoService;
 
-    public DashboardService(FuncionarioRepository funcionarioRepository, FaculdadeRepository faculdadeRepository, EstagiarioRepository estagiarioRepository, EstagiarioService estagiarioService, AvaliacaoService avaliacaoService) {
-        this.funcionarioRepository = funcionarioRepository;
-        this.faculdadeRepository = faculdadeRepository;
+    public DashboardService(SupervisorRepository supervisorRepository,
+                            CoordenadorRepository coordenadorRepository, // <-- MUDANÇA
+                            EstagiarioRepository estagiarioRepository,
+                            EstagiarioService estagiarioService,
+                            AvaliacaoService avaliacaoService) {
+        this.supervisorRepository = supervisorRepository;
+        this.coordenadorRepository = coordenadorRepository;
         this.estagiarioRepository = estagiarioRepository;
         this.estagiarioService = estagiarioService;
         this.avaliacaoService = avaliacaoService;
@@ -36,10 +40,12 @@ public class DashboardService {
 
     public List<EstagiarioResponseDTO> getSupervisorDashboardData() {
         String email = getAuthenticatedUserEmail();
-        Funcionario supervisor = funcionarioRepository.findByEmail(email)
+        Supervisor supervisor = supervisorRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Supervisor não encontrado."));
 
         Long empresaId = supervisor.getEmpresa().getId();
+        // Assumindo que Estagiario tem um campo "empresaId" ou similar
+        // Se o estagiário tiver private Empresa empresa, mude para findByEmpresa_Id
         return estagiarioRepository.findByEmpresaId(empresaId).stream()
                 .map(estagiarioService::toResponseDTO)
                 .collect(Collectors.toList());
@@ -47,10 +53,15 @@ public class DashboardService {
 
     public List<EstagiarioResponseDTO> getFaculdadeDashboardData() {
         String email = getAuthenticatedUserEmail();
-        Faculdade faculdade = faculdadeRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Faculdade não encontrada."));
 
-        Long faculdadeId = faculdade.getId();
+        // --- LÓGICA CORRIGIDA ---
+        Coordenador coordenador = coordenadorRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Coordenador não encontrado."));
+
+        Long faculdadeId = coordenador.getFaculdade().getId(); // Pega o ID da instituição
+        // -------------------------
+
+        // A sua query original de busca de estagiários
         return estagiarioRepository.findByDadosAcademicos_Faculdade_Id(faculdadeId).stream()
                 .map(estagiarioService::toResponseDTO)
                 .collect(Collectors.toList());

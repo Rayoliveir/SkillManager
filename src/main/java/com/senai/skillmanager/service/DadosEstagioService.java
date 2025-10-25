@@ -4,10 +4,10 @@ import com.senai.skillmanager.dto.DadosEstagioDTO;
 import com.senai.skillmanager.dto.DadosEstagioResponseDTO;
 import com.senai.skillmanager.model.estagiario.DadosEstagio;
 import com.senai.skillmanager.model.estagiario.Estagiario;
-import com.senai.skillmanager.model.funcionario.Funcionario;
+import com.senai.skillmanager.model.empresa.Supervisor;
 import com.senai.skillmanager.repository.DadosEstagioRepository;
 import com.senai.skillmanager.repository.EstagiarioRepository;
-import com.senai.skillmanager.repository.FuncionarioRepository;
+import com.senai.skillmanager.repository.SupervisorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,18 +18,18 @@ import java.util.stream.Collectors;
 public class DadosEstagioService {
 
     private final DadosEstagioRepository dadosEstagioRepository;
-    private final FuncionarioRepository funcionarioRepository;
+    private final SupervisorRepository supervisorRepository;
     private final EstagiarioRepository estagiarioRepository;
 
-    public DadosEstagioService(DadosEstagioRepository dadosEstagioRepository, FuncionarioRepository funcionarioRepository, EstagiarioRepository estagiarioRepository) {
+    public DadosEstagioService(DadosEstagioRepository dadosEstagioRepository, SupervisorRepository supervisorRepository, EstagiarioRepository estagiarioRepository) {
         this.dadosEstagioRepository = dadosEstagioRepository;
-        this.funcionarioRepository = funcionarioRepository;
+        this.supervisorRepository = supervisorRepository;
         this.estagiarioRepository = estagiarioRepository;
     }
 
     @Transactional
     public DadosEstagioResponseDTO salvar(DadosEstagioDTO dto) {
-        Funcionario supervisor = funcionarioRepository.findById(dto.getSupervisorId())
+        Supervisor supervisor = supervisorRepository.findById(dto.getSupervisorId())
                 .orElseThrow(() -> new RuntimeException("Funcionário supervisor não encontrado com ID: " + dto.getSupervisorId()));
 
         Estagiario estagiario = estagiarioRepository.findById(dto.getEstagiarioId())
@@ -68,7 +68,7 @@ public class DadosEstagioService {
         DadosEstagio dadosEstagioExistente = dadosEstagioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dados de estágio não encontrados com ID: " + id));
 
-        Funcionario supervisor = funcionarioRepository.findById(dto.getSupervisorId())
+        Supervisor supervisor = supervisorRepository.findById(dto.getSupervisorId())
                 .orElseThrow(() -> new RuntimeException("Funcionário supervisor não encontrado com ID: " + dto.getSupervisorId()));
 
         Estagiario estagiario = estagiarioRepository.findById(dto.getEstagiarioId())

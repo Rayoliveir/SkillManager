@@ -10,8 +10,6 @@ public class LoginDTO {
     @NotBlank(message = "O campo senha é obrigatório.")
     private String senha;
 
-    // ✨ CONSTRUTOR PADRÃO ADICIONADO AQUI ✨
-    // Essencial para o Spring conseguir criar o objeto a partir do JSON
     public LoginDTO() {
     }
 

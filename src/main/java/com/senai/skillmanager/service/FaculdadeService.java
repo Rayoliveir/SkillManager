@@ -6,7 +6,7 @@ import com.senai.skillmanager.dto.FaculdadeResponseDTO;
 import com.senai.skillmanager.model.Endereco;
 import com.senai.skillmanager.model.faculdade.Faculdade;
 import com.senai.skillmanager.repository.FaculdadeRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,20 +17,15 @@ import java.util.stream.Collectors;
 public class FaculdadeService {
 
     private final FaculdadeRepository faculdadeRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public FaculdadeService(FaculdadeRepository faculdadeRepository, PasswordEncoder passwordEncoder) {
+    public FaculdadeService(FaculdadeRepository faculdadeRepository) {
         this.faculdadeRepository = faculdadeRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public FaculdadeResponseDTO salvar(FaculdadeDTO dto) {
         faculdadeRepository.findByCnpj(dto.getCnpj()).ifPresent(f -> {
             throw new RuntimeException("CNPJ já cadastrado.");
-        });
-        faculdadeRepository.findByEmail(dto.getEmail()).ifPresent(f -> {
-            throw new RuntimeException("Email já cadastrado.");
         });
 
         EnderecoDTO enderecoDTO = dto.getEndereco();
@@ -46,13 +41,8 @@ public class FaculdadeService {
         faculdade.setNome(dto.getNome());
         faculdade.setCnpj(dto.getCnpj());
         faculdade.setTelefone(dto.getTelefone());
-        faculdade.setEmail(dto.getEmail());
         faculdade.setSite(dto.getSite());
         faculdade.setEndereco(endereco);
-
-        // ✨ A CORREÇÃO ESSENCIAL ESTÁ AQUI ✨
-        // Criptografa a senha antes de salvar no banco de dados
-        faculdade.setSenha(passwordEncoder.encode(dto.getSenha()));
 
         Faculdade faculdadeSalva = faculdadeRepository.save(faculdade);
         return toResponseDTO(faculdadeSalva);
@@ -64,21 +54,28 @@ public class FaculdadeService {
                 .collect(Collectors.toList());
     }
 
+    public Faculdade buscarEntidadePorId(Long id) {
+        return faculdadeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Faculdade não encontrada com ID: " + id));
+    }
+
+    public Faculdade buscarEntidadePorCnpj(String cnpj) {
+        return faculdadeRepository.findByCnpj(cnpj)
+                .orElseThrow(() -> new EntityNotFoundException("Faculdade não encontrada com o CNPJ: " + cnpj));
+    }
+
     public FaculdadeResponseDTO buscarPorId(Long id) {
-        Faculdade faculdade = faculdadeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Faculdade não encontrada com ID: " + id));
+        Faculdade faculdade = buscarEntidadePorId(id);
         return toResponseDTO(faculdade);
     }
 
     @Transactional
     public FaculdadeResponseDTO atualizar(Long id, FaculdadeDTO dto) {
-        Faculdade faculdadeExistente = faculdadeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Faculdade não encontrada com ID: " + id));
+        Faculdade faculdadeExistente = buscarEntidadePorId(id);
 
         faculdadeExistente.setNome(dto.getNome());
         faculdadeExistente.setCnpj(dto.getCnpj());
         faculdadeExistente.setTelefone(dto.getTelefone());
-        faculdadeExistente.setEmail(dto.getEmail());
         faculdadeExistente.setSite(dto.getSite());
 
         EnderecoDTO enderecoDTO = dto.getEndereco();
@@ -90,18 +87,14 @@ public class FaculdadeService {
         endereco.setEstados(enderecoDTO.getEstados());
         endereco.setCep(enderecoDTO.getCep());
 
-        // Garante que a senha seja criptografada também na atualização, se for alterada
-        if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
-            faculdadeExistente.setSenha(passwordEncoder.encode(dto.getSenha()));
-        }
-
         Faculdade faculdadeAtualizada = faculdadeRepository.save(faculdadeExistente);
         return toResponseDTO(faculdadeAtualizada);
     }
 
+    @Transactional
     public void excluir(Long id) {
         if (!faculdadeRepository.existsById(id)) {
-            throw new RuntimeException("Faculdade não encontrada com ID: " + id);
+            throw new EntityNotFoundException("Faculdade não encontrada com ID: " + id);
         }
         faculdadeRepository.deleteById(id);
     }
@@ -112,7 +105,6 @@ public class FaculdadeService {
         response.setNome(faculdade.getNome());
         response.setCnpj(faculdade.getCnpj());
         response.setTelefone(faculdade.getTelefone());
-        response.setEmail(faculdade.getEmail());
         response.setSite(faculdade.getSite());
 
         if (faculdade.getEndereco() != null) {

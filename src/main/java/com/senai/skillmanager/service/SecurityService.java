@@ -1,11 +1,11 @@
 package com.senai.skillmanager.service;
 
 import com.senai.skillmanager.model.estagiario.Estagiario;
-import com.senai.skillmanager.model.faculdade.Faculdade;
-import com.senai.skillmanager.model.funcionario.Funcionario;
+import com.senai.skillmanager.model.faculdade.Coordenador; // Importado o model Coordenador
+import com.senai.skillmanager.model.empresa.Supervisor; // Importado o model Supervisor
 import com.senai.skillmanager.repository.EstagiarioRepository;
-import com.senai.skillmanager.repository.FaculdadeRepository;
-import com.senai.skillmanager.repository.FuncionarioRepository;
+import com.senai.skillmanager.repository.CoordenadorRepository; // Repositório atualizado
+import com.senai.skillmanager.repository.SupervisorRepository; // Repositório atualizado
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -21,17 +21,18 @@ import java.util.Optional;
 public class SecurityService implements UserDetailsService {
 
     private final EstagiarioRepository estagiarioRepository;
-    private final FuncionarioRepository funcionarioRepository;
-    private final FaculdadeRepository faculdadeRepository;
+    private final SupervisorRepository supervisorRepository; // Repositório atualizado
+    private final CoordenadorRepository coordenadorRepository; // Repositório atualizado
 
-    public SecurityService(EstagiarioRepository estagiarioRepository, FuncionarioRepository funcionarioRepository, FaculdadeRepository faculdadeRepository) {
+    public SecurityService(EstagiarioRepository estagiarioRepository, SupervisorRepository supervisorRepository, CoordenadorRepository coordenadorRepository) {
         this.estagiarioRepository = estagiarioRepository;
-        this.funcionarioRepository = funcionarioRepository;
-        this.faculdadeRepository = faculdadeRepository;
+        this.supervisorRepository = supervisorRepository;
+        this.coordenadorRepository = coordenadorRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 1. Tenta encontrar como Estagiário
         Optional<Estagiario> estagiarioOpt = estagiarioRepository.findByEmail(username);
         if (estagiarioOpt.isPresent()) {
             Estagiario estagiario = estagiarioOpt.get();
@@ -39,20 +40,24 @@ public class SecurityService implements UserDetailsService {
             return new User(estagiario.getEmail(), estagiario.getSenha(), authorities);
         }
 
-        Optional<Funcionario> funcionarioOpt = funcionarioRepository.findByEmail(username);
-        if (funcionarioOpt.isPresent()) {
-            Funcionario funcionario = funcionarioOpt.get();
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + funcionario.getCargo().name()));
-            return new User(funcionario.getEmail(), funcionario.getSenha(), authorities);
+        // 2. Tenta encontrar como Supervisor (antigo Funcionario)
+        Optional<Supervisor> supervisorOpt = supervisorRepository.findByEmail(username);
+        if (supervisorOpt.isPresent()) {
+            Supervisor supervisor = supervisorOpt.get();
+            // A role vem do Enum Cargo (ex: ROLE_ADMIN, ROLE_SUPERVISOR)
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + supervisor.getCargo().name()));
+            return new User(supervisor.getEmail(), supervisor.getSenha(), authorities);
         }
 
-        Optional<Faculdade> faculdadeOpt = faculdadeRepository.findByEmail(username);
-        if (faculdadeOpt.isPresent()) {
-            Faculdade faculdade = faculdadeOpt.get();
+        // 3. Tenta encontrar como Coordenador (antigo Faculdade)
+        Optional<Coordenador> coordenadorOpt = coordenadorRepository.findByEmail(username);
+        if (coordenadorOpt.isPresent()) {
+            Coordenador coordenador = coordenadorOpt.get();
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_FACULDADE"));
-            return new User(faculdade.getEmail(), faculdade.getSenha(), authorities);
+            return new User(coordenador.getEmail(), coordenador.getSenha(), authorities);
         }
 
+        // Se não encontrou ninguém
         throw new UsernameNotFoundException("Usuário não encontrado com o email: " + username);
     }
 }

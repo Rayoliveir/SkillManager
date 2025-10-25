@@ -1,7 +1,5 @@
 package com.senai.skillmanager.dto;
 
-import com.senai.skillmanager.model.estagiario.Estagiario;
-import com.senai.skillmanager.model.funcionario.Funcionario;
 import java.time.LocalDate;
 
 // DTO para ENVIAR uma avaliação como resposta da API
@@ -17,7 +15,7 @@ public class AvaliacaoResponseDTO {
     private Integer notaParticipacao;
     private Integer notaComportamento;
     private LocalDate dataAvaliacao;
-    private FuncionarioResponseDTO supervisor; // Usando DTO para evitar expor dados sensíveis
+    private SupervisorResponseDTO supervisor; // Usando DTO para evitar expor dados sensíveis
     private EstagiarioResponseDTO estagiario; // Usando DTO
 
     // Getters e Setters
@@ -81,10 +79,10 @@ public class AvaliacaoResponseDTO {
     public void setDataAvaliacao(LocalDate dataAvaliacao) {
         this.dataAvaliacao = dataAvaliacao;
     }
-    public FuncionarioResponseDTO getSupervisor() {
+    public SupervisorResponseDTO getSupervisor() {
         return supervisor;
     }
-    public void setSupervisor(FuncionarioResponseDTO supervisor) {
+    public void setSupervisor(SupervisorResponseDTO supervisor) {
         this.supervisor = supervisor;
     }
     public EstagiarioResponseDTO getEstagiario() {

@@ -22,7 +22,7 @@ public class DashboardController {
     }
 
     @GetMapping("/supervisor")
-    @PreAuthorize("hasAnyRole('SUPERVISOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR', 'GERENTE')") // <-- CORRIGIDO
     public ResponseEntity<List<EstagiarioResponseDTO>> getSupervisorDashboard() {
         return ResponseEntity.ok(dashboardService.getSupervisorDashboardData());
     }
