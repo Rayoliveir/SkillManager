@@ -1,5 +1,5 @@
 # SkillManager
-Projeto de TCC do curso de Desenvolvimento de sistemas - Senai Dendezeiros
+Projeto de TCC do curso de Desenvolvimento de sistemas - Senai Dendezeios
 
 ## 💡 Sobre o Projeto
 

@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './styles.css';
 
+
 const TabsNavegacao = ({ abaAtiva, onTabChange }) => (
     <nav className="tabs-nav-container">
         <button className={`tab-button ${abaAtiva === 'informacoes' ? 'active' : ''}`} onClick={() => onTabChange('informacoes')}>
@@ -24,6 +25,8 @@ const TabsNavegacao = ({ abaAtiva, onTabChange }) => (
     </nav>
 );
 
+
+
 const AbaInformacoes = ({ dadosEstagiario }) => (
     <div className="dashboard-grid">
         <div className="info-card card">
@@ -38,6 +41,14 @@ const AbaInformacoes = ({ dadosEstagiario }) => (
                         <span className="info-value">{dadosEstagiario.nome}</span>
                     </div>
                     <div className="info-field">
+                        <span className="info-label">Data de nascimento:</span>
+                        <span className="info-value">{dadosEstagiario.dataNascimento}</span>
+                    </div>
+                    <div className="info-field">
+                        <span className="info-label">Genero:</span>
+                        <span className="info-value">{dadosEstagiario.genero}</span>
+                    </div>
+                    <div className="info-field">
                         <span className="info-label">Email:</span>
                         <span className="info-value">{dadosEstagiario.email}</span>
                     </div>
@@ -49,6 +60,32 @@ const AbaInformacoes = ({ dadosEstagiario }) => (
                         <span className="info-label">CPF:</span>
                         <span className="info-value">{dadosEstagiario.cpf}</span>
                     </div>
+                    <div className="info-field">
+                        <span className="info-label">Faculdade:</span>
+                        {/* <span className="info-value">{}</span> */}
+                    </div>
+                    <div className="info-field">
+                        <span className="info-label">Curso:</span>
+                        {/* <span className="info-value">{}</span> */}
+                    </div>
+                    <div className="info-field">
+                        <span className="info-label">Semestre:</span>
+                        {/* <span className="info-value">{}</span> */}
+                    </div>
+                    <div className="info-field">
+                        <span className="info-label">R.A:</span>
+                        {/* <span className="info-value">{}</span> */}
+                    </div>
+                <div className="info-field">
+                        <span className="info-label">Endereço:</span>
+                        <span className="info-value">
+                            {dadosEstagiario.endereco.logradouro}, {dadosEstagiario.endereco.numero}
+                            <br />
+                            {dadosEstagiario.endereco.bairro}, {dadosEstagiario.endereco.cidade} - {dadosEstagiario.endereco.estados}
+                            <br />
+                            CEP: {dadosEstagiario.endereco.cep}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,7 +93,7 @@ const AbaInformacoes = ({ dadosEstagiario }) => (
         <div className="stats-card card">
             <div className="stat-item">
                 <div className="stat-icon">🚀</div>
-                <div className="stat-value">12</div>
+                <div className="stat-value">15</div>
                 <div className="stat-label">Competências</div>
             </div>
             <div className="stat-item">
@@ -97,7 +134,7 @@ const AbaCompetencias = () => (
                             <span className="skill-level">Intermediário</span>
                         </div>
                         <div className="skill-bar">
-                            <div className="skill-progress" style={{width: '70%'}}></div>
+                            <div className="skill-progress" style={{width: '80%'}}></div>
                         </div>
                     </div>
                     <div className="skill-item">

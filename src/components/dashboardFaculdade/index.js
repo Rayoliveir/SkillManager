@@ -71,17 +71,17 @@ const AbaInformacoes = ({ dadosFaculdade }) => (
         <div className="stats-card card">
             <div className="stat-item">
                 <div className="stat-icon">👥</div>
-                <div className="stat-value">24</div>
+                <div className="stat-value"> </div> {/* tem que puxar o valor do backend*/}
                 <div className="stat-label">Estagiários</div>
             </div>
             <div className="stat-item">
                 <div className="stat-icon">🏢</div>
-                <div className="stat-value">18</div>
+                <div className="stat-value"> </div> {/* tem que puxar o valor do backend*/}
                 <div className="stat-label">Empresas</div>
             </div>
             <div className="stat-item">
                 <div className="stat-icon">⭐</div>
-                <div className="stat-value">42</div>
+                <div className="stat-value"> </div> {/* tem que puxar o valor do backend*/}
                 <div className="stat-label">Avaliações</div>
             </div>
         </div>
@@ -105,32 +105,11 @@ const AbaEstagiarios = () => (
                         <div className="table-cell">Status</div>
                     </div>
                     <div className="table-row">
-                        <div className="table-cell">Ana Silva</div>
-                        <div className="table-cell">Ciência da Computação</div>
-                        <div className="table-cell">6º Semestre</div>
-                        <div className="table-cell">Tech Solutions</div>
-                        <div className="table-cell"><span className="status-active">Ativo</span></div>
-                    </div>
-                    <div className="table-row">
-                        <div className="table-cell">Carlos Oliveira</div>
-                        <div className="table-cell">Engenharia de Software</div>
-                        <div className="table-cell">4º Semestre</div>
-                        <div className="table-cell">InovaTI</div>
-                        <div className="table-cell"><span className="status-pending">Pendente</span></div>
-                    </div>
-                    <div className="table-row">
-                        <div className="table-cell">Mariana Costa</div>
-                        <div className="table-cell">Sistemas de Informação</div>
-                        <div className="table-cell">8º Semestre</div>
-                        <div className="table-cell">DataCorp</div>
-                        <div className="table-cell"><span className="status-completed">Concluído</span></div>
-                    </div>
-                    <div className="table-row">
-                        <div className="table-cell">Pedro Santos</div>
-                        <div className="table-cell">Análise e Desenvolvimento</div>
-                        <div className="table-cell">2º Semestre</div>
-                        <div className="table-cell">WebDev</div>
-                        <div className="table-cell"><span className="status-active">Ativo</span></div>
+                        <div className="table-cell">Ana Silva</div> {/* tem que puxar o valor do backend*/}
+                        <div className="table-cell">Ciência da Computação</div> {/* tem que puxar o valor do backend*/}
+                        <div className="table-cell">6º Semestre</div> {/* tem que puxar o valor do backend*/}
+                        <div className="table-cell">Tech Solutions</div> {/* tem que puxar o valor do backend*/}
+                        <div className="table-cell"><span className="status-active">Ativo</span></div> {/* tem que puxar o valor do backend*/}
                     </div>
                 </div>
             </div>
@@ -143,10 +122,8 @@ const AbaAvaliacoes = () => {
     
     // Mock data for interns
     const interns = [
-        { id: 1, name: 'Ana Silva', course: 'Ciência da Computação' },
-        { id: 2, name: 'Carlos Oliveira', course: 'Engenharia de Software' },
-        { id: 3, name: 'Mariana Costa', course: 'Sistemas de Informação' },
-        { id: 4, name: 'Pedro Santos', course: 'Análise e Desenvolvimento' }
+        { id: 1, name: 'Ana Silva', course: 'Ciência da Computação' } // tem que puxar o valor do backend
+     
     ];
     
     // Mock data for evaluations
@@ -166,41 +143,7 @@ const AbaAvaliacoes = () => {
                 rating: 4,
                 company: 'Tech Solutions'
             }
-        ],
-        2: [
-            {
-                id: 3,
-                date: '10/05/2023',
-                text: 'Bom trabalho na documentação do projeto. Precisa melhorar na comunicação com a equipe.',
-                rating: 3,
-                company: 'InovaTI'
-            }
-        ],
-        3: [
-            {
-                id: 4,
-                date: '05/05/2023',
-                text: 'Demonstra bom conhecimento técnico, mas precisa melhorar na organização das entregas.',
-                rating: 4,
-                company: 'DataCorp'
-            },
-            {
-                id: 5,
-                date: '01/04/2023',
-                text: 'Ótimo trabalho em equipe. Contribuiu significativamente para o projeto.',
-                rating: 5,
-                company: 'DataCorp'
-            }
-        ],
-        4: [
-            {
-                id: 6,
-                date: '12/05/2023',
-                text: 'Está se adaptando bem ao ambiente de trabalho. Mostra interesse em aprender.',
-                rating: 4,
-                company: 'WebDev'
-            }
-        ]
+        ] // tem que puxar o valor do backend
     };
     
     const renderStars = (rating) => {
@@ -265,7 +208,7 @@ const AbaAvaliacoes = () => {
         </div>
     );
 };
-
+// {/* tem que puxar o valor do backend*/}
 const AbaRelatorios = () => (
     <div className="dashboard-grid">
         <div className="reports-card card">
@@ -279,7 +222,7 @@ const AbaRelatorios = () => (
                         <div className="report-icon">📊</div>
                         <div className="report-info">
                             <h4>Desempenho Geral</h4>
-                            <p>Média de avaliações: 4.2/5.0</p>
+                            <p>Média de avaliações: 4.2/5.0</p> 
                         </div>
                     </div>
                     <div className="report-item card">
