@@ -1,6 +1,6 @@
 package com.senai.skillmanager.dto;
 
-import com.senai.skillmanager.model.Empresa;
+import com.senai.skillmanager.model.empresa.Empresa;
 import com.senai.skillmanager.model.funcionario.Cargo;
 
 public class FuncionarioResponseDTO {

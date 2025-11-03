@@ -1,6 +1,6 @@
 package com.senai.skillmanager.model.funcionario;
 
-import com.senai.skillmanager.model.Empresa;
+import com.senai.skillmanager.model.empresa.Empresa;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

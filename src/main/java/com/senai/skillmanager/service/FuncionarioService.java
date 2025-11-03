@@ -2,7 +2,7 @@ package com.senai.skillmanager.service;
 
 import com.senai.skillmanager.dto.FuncionarioDTO;
 import com.senai.skillmanager.dto.FuncionarioResponseDTO;
-import com.senai.skillmanager.model.Empresa;
+import com.senai.skillmanager.model.empresa.Empresa;
 import com.senai.skillmanager.model.funcionario.Funcionario;
 import com.senai.skillmanager.repository.EmpresaRepository;
 import com.senai.skillmanager.repository.FuncionarioRepository;
