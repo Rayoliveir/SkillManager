@@ -22,7 +22,6 @@ O **SkillManager** é uma plataforma web de gestão de estagiários desenvolvida
 - ✅ Feedback contínuo e relatórios de desempenho
 - ✅ Modelo de negócio baseado em SaaS (Software como Serviço)
 
-
   
 ## 📅 Progresso e Kanban
 
@@ -35,9 +34,9 @@ O progresso do projeto está sendo gerenciado via GitHub Projects (Kanban). As t
 - 
 ## 🛠️ Tecnologias Utilizadas (Em ánalise)
 
-- Frontend: React.js (ou outro framework JS)
-- Backend: Node.js + Express
-- Banco de Dados: MongoDB ou PostgreSQL
+- Frontend: React.js 
+- Backend: Java & SpringBoot
+- Banco de Dados: MySQL
 - Autenticação: JWT
 - Hospedagem: Vercel / Render / Railway
 
