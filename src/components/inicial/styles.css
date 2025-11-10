@@ -144,3 +144,157 @@ body {
     height: 40px;
     object-fit: contain;
 }
+
+.recursos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    /* background-color: #538aff; */
+    height: 30rem;
+    gap: 3rem;    
+}
+
+.titulo-recursos {
+    text-align: center;
+}
+
+.titulo-recursos h1 {
+    color: #131C2F;
+    font-size: 3rem;
+}
+
+.titulo-recursos span {
+    color: #F47C2A;
+}
+
+.titulo-recursos p {
+    color: #686868b2;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+
+}
+.cards {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+    gap: 3rem;
+}
+
+.card__descri {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    background: rgb(255, 250, 223);
+    width: 14rem;
+    height: 15rem;
+    border-radius: 10px;
+    border: 1px solid rgba(80, 80, 80, 0.178);
+    
+}
+
+.card__icon1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background-color: #131C2F;
+    border-radius: 10px;
+    left: 20px;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.card__icon2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background-color: #F47C2A;
+    border-radius: 10px;
+    left: 20px;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.card__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    left: 20px;
+    position: relative; 
+    width: 12rem;
+}
+
+.card__text h3 {
+    color: #131C2F;
+    font-size: 1.2rem;
+    font-weight: 200;
+}
+
+.card__text p {
+    color: #535353;
+    font-size: 0.8rem;
+}
+.competencias {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 30rem;
+}
+
+.titulo-competencias h1 {
+    color: #131C2F;
+    font-size: 3rem;
+}
+
+.titulo-competencias span {
+    color: #F47C2A;
+}
+
+.titulo-competencias p {
+    color: #686868b2;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.cta-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+    height: 20rem;
+    gap: 1rem;
+}
+
+.cta-button input {
+    width: 30%;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgb(77, 77, 77);
+    background: #001e4e6c;
+    padding: 0 10px;
+}
+
+.cta-button button {
+    width: 10%;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background: #F47C2A;
+    padding: 0 10px;
+    color: #FFF;
+    cursor: pointer
+}

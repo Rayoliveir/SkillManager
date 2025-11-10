@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import useMensagem from '../../hooks/useMensagem';
 import MensagemFeedback from '../mensagemFeedback';
-import { DEV_USERS, isDevMode } from '../../utils/devUsers';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -26,15 +25,6 @@ function Login() {
             exibirMensagem('Login ou senha incorretos. Tente novamente.', 'erro');
         }
     }
-
-    // Function to auto-fill login form with dev user credentials
-    const fillDevUser = (userType) => {
-        const user = DEV_USERS[userType];
-        if (user) {
-            setEmail(user.email);
-            setSenha(user.senha);
-        }
-    };
 
     return (
         <main className="main-login">
@@ -77,36 +67,6 @@ function Login() {
                         <button type="submit">Entrar</button>
                     </div>
                     <p>Não tem uma conta? Crie sua conta <Link to="/cadastro">aqui</Link></p>
-                    
-                    {/* Development users section - only visible in development mode */}
-                    {isDevMode() && (
-                        <div className="dev-users-section">
-                            <h3>Usuários para Desenvolvimento:</h3>
-                            <div className="dev-users-list">
-                                <button 
-                                    type="button" 
-                                    className="dev-user-btn"
-                                    onClick={() => fillDevUser('estagiario')}
-                                >
-                                    Estagiário: {DEV_USERS.estagiario.email} / {DEV_USERS.estagiario.senha}
-                                </button>
-                                <button 
-                                    type="button" 
-                                    className="dev-user-btn"
-                                    onClick={() => fillDevUser('faculdade')}
-                                >
-                                    Faculdade: {DEV_USERS.faculdade.email} / {DEV_USERS.faculdade.senha}
-                                </button>
-                                <button 
-                                    type="button" 
-                                    className="dev-user-btn"
-                                    onClick={() => fillDevUser('funcionario')}
-                                >
-                                    Funcionário: {DEV_USERS.funcionario.email} / {DEV_USERS.funcionario.senha}
-                                </button>
-                            </div>
-                        </div>
-                    )}
                 </form>
             </div>
         </main>

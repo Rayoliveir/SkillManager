@@ -31,22 +31,30 @@
 .form-login {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 1.5em;
+    width: 100%;
+    max-width: 400px;
 }
 
 .form-login label {
-    text-align: left;
+    display: flex;
+    flex-direction: column;
     color: #131C2F;
-    font-weight: 50;
+    font-weight: bold;
+    gap: 0.5em;
 }
 
 .form-login input {
-    width: 100%;
     padding: 0.8em;
-    border: 2px solid #131C2F;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    margin-top: 0.3em;
-    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.form-login input:focus {
+    outline: none;
+    border-color: #5D82AD;
+    box-shadow: 0 0 0 2px rgba(93, 130, 173, 0.2);
 }
 
 .form-login button {
@@ -78,40 +86,6 @@
 
 .form-login a:hover {
     text-decoration: underline;
-}
-
-/* Development users section */
-.dev-users-section {
-    margin-top: 2em;
-    padding-top: 1.5em;
-    border-top: 1px solid #e0e0e0;
-}
-
-.dev-users-section h3 {
-    color: #131C2F;
-    margin-bottom: 1em;
-    font-size: 1.1em;
-}
-
-.dev-users-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-}
-
-.dev-user-btn {
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 0.8em;
-    text-align: left;
-    font-size: 0.85em;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.dev-user-btn:hover {
-    background: #e0e0e0;
 }
 
 @media (max-width: 480px) {
