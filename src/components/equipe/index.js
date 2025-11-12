@@ -14,8 +14,8 @@ function Equipe() {
                         <img src="/assets/images/default-avatar.png" alt="Membro da equipe" />
                     </div>
                     <div className="member-info">
-                        <h3>Nome do Membro</h3>
-                        <p className="role">Cargo/Função</p>
+                        <h3>Marcelly Oliveira</h3>
+                        <p className="role">Desenvolvedor</p>
                         <p className="description">Breve descrição sobre o membro e sua contribuição para o projeto.</p>
                     </div>
                 </div>
@@ -25,8 +25,8 @@ function Equipe() {
                         <img src="/assets/images/default-avatar.png" alt="Membro da equipe" />
                     </div>
                     <div className="member-info">
-                        <h3>Nome do Membro</h3>
-                        <p className="role">Cargo/Função</p>
+                        <h3>Michel Linhares</h3>
+                        <p className="role">Desenvolvedor</p>
                         <p className="description">Breve descrição sobre o membro e sua contribuição para o projeto.</p>
                     </div>
                 </div>
@@ -36,8 +36,8 @@ function Equipe() {
                         <img src="/assets/images/default-avatar.png" alt="Membro da equipe" />
                     </div>
                     <div className="member-info">
-                        <h3>Nome do Membro</h3>
-                        <p className="role">Cargo/Função</p>
+                        <h3>Natália França</h3>
+                        <p className="role">Desenvolvedor</p>
                         <p className="description">Breve descrição sobre o membro e sua contribuição para o projeto.</p>
                     </div>
                 </div>
@@ -47,8 +47,8 @@ function Equipe() {
                         <img src="/assets/images/default-avatar.png" alt="Membro da equipe" />
                     </div>
                     <div className="member-info">
-                        <h3>Nome do Membro</h3>
-                        <p className="role">Cargo/Função</p>
+                        <h3>Rhana Souza</h3>
+                        <p className="role">Desenvolvedor</p>
                         <p className="description">Breve descrição sobre o membro e sua contribuição para o projeto.</p>
                     </div>
                 </div>
@@ -58,8 +58,8 @@ function Equipe() {
                         <img src="/assets/images/default-avatar.png" alt="Membro da equipe" />
                     </div>
                     <div className="member-info">
-                        <h3>Nome do Membro</h3>
-                        <p className="role">Cargo/Função</p>
+                        <h3>Tiago Santana</h3>
+                        <p className="role">Desenvolvedor</p>
                         <p className="description">Breve descrição sobre o membro e sua contribuição para o projeto.</p>
                     </div>
                 </div>

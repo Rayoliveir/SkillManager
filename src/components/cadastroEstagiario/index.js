@@ -25,7 +25,7 @@ function CadastroEstagiario() {
             cep: ''
         },
         dadosAcademicos: {
-            faculdadeId: 1,
+            faculdadeCNPJ: '',
             curso: '',
             periodoSemestre: '',
             previsaoFormatura: '',
