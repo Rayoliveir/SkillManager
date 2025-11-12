@@ -1,0 +1,17 @@
+#FCF5EA - Floral White
+#9BB3BE - Cadet Gray
+#161F32 - Oxford Blue
+#131C2F - Oxford Blue 2
+#C7C7C6 - Silver
+#FEFAEB - Cosmic latte
+#FEF8EC - Floral White 2
+#EA582C - Flame
+#F47C2A - Pumpkin
+#F59351 - Atomic tangerine
+#EAD1B9 - Desert sand
+#F28D3B - UT Orange
+#FEEFCF - Papaya whip
+#5D82AD - Glaucous
+#91DEA5 - Celadon
+#9FBFF1 - Jordy Blue
+#CEA3EC - Wisteria
