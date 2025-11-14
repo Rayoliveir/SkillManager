@@ -72,7 +72,7 @@ function CadastroFaculdade() {
                     <fieldset className="dados-institucionais">
                         <legend>Dados institucionais</legend>
                         <label>Nome da faculdade<br />
-                            <input type="text" name="nome" placeholder="Nome da instituição" required value={formData.nome} onChange={handleChange} />
+                            <input type="text" name="nome" placeholder="Ex: Unifacs" required value={formData.nome} onChange={handleChange} />
                         </label>
                         <label>CNPJ<br />
                             <input type="text" name="cnpj" placeholder="00.000.000/0000-00" required value={formData.cnpj} onChange={handleChange} />
@@ -94,16 +94,16 @@ function CadastroFaculdade() {
                     <fieldset className="endereco">
                         <legend>Endereço</legend>
                         <label>Logradouro<br />
-                            <input type="text" name="endereco.logradouro" placeholder="Rua / Avenida" required value={formData.endereco.logradouro} onChange={handleChange} />
+                            <input type="text" name="endereco.logradouro" placeholder="Ex: Rua dos Bandeirantes" required value={formData.endereco.logradouro} onChange={handleChange} />
                         </label>
                         <label>Número<br />
-                            <input type="text" name="endereco.numero" placeholder="Número" required value={formData.endereco.numero} onChange={handleChange} />
+                            <input type="text" name="endereco.numero" placeholder="Ex: 000 / 000A" required value={formData.endereco.numero} onChange={handleChange} />
                         </label>
                         <label>Bairro<br />
-                            <input type="text" name="endereco.bairro" placeholder="Bairro" required value={formData.endereco.bairro} onChange={handleChange} />
+                            <input type="text" name="endereco.bairro" placeholder="Ex: Centro" required value={formData.endereco.bairro} onChange={handleChange} />
                         </label>
                         <label>Cidade<br />
-                            <input type="text" name="endereco.cidade" placeholder="Cidade" required value={formData.endereco.cidade} onChange={handleChange} />
+                            <input type="text" name="endereco.cidade" placeholder="Ex: Salvador" required value={formData.endereco.cidade} onChange={handleChange} />
                         </label>
                         <label>Estado<br />
                             <select name="endereco.estados" required value={formData.endereco.estados} onChange={handleChange}>
@@ -127,7 +127,7 @@ function CadastroFaculdade() {
                             <input type="email" name="email" placeholder="contato@faculdade.edu.br" required value={formData.email} onChange={handleChange} />
                         </label>
                         <label>Senha<br />
-                            <input type="password" name="senha" placeholder="Senha" minLength="6" required value={formData.senha} onChange={handleChange} />
+                            <input type="password" name="senha" placeholder="**********" minLength="6" required value={formData.senha} onChange={handleChange} />
                         </label>
                     </fieldset>
                 </>

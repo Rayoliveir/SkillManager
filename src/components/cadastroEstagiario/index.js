@@ -16,6 +16,7 @@ function CadastroEstagiario() {
         email: '',
         cpf: '',
         senha: '',
+        codigoEmpresa: '',
         endereco: {
             logradouro: '',
             bairro: '',
@@ -25,7 +26,7 @@ function CadastroEstagiario() {
             cep: ''
         },
         dadosAcademicos: {
-            faculdadeCNPJ: '',
+            faculdadeCnpj: '',
             curso: '',
             periodoSemestre: '',
             previsaoFormatura: '',
@@ -67,6 +68,7 @@ function CadastroEstagiario() {
             },
             dadosAcademicos: {
                 ...formData.dadosAcademicos,
+                faculdadeCnpj: formData.dadosAcademicos.faculdadeCnpj.replace(/\D/g, ''),
                 previsaoFormatura: formData.dadosAcademicos.previsaoFormatura ? formData.dadosAcademicos.previsaoFormatura.substring(0, 7) : ''
             }
         };
@@ -84,7 +86,6 @@ function CadastroEstagiario() {
     
     const estadosBrasileiros = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
 
-    // Definindo os passos para o formulário em etapas
     const steps = [
         {
             title: "Dados Pessoais",
@@ -169,8 +170,13 @@ function CadastroEstagiario() {
                 <>
                     <fieldset className="dados-academicos">
                         <legend>Dados acadêmicos</legend>
-                        <label>ID da faculdade <br />
-                            <input type="number" name="dadosAcademicos.faculdadeId" placeholder="ID da Faculdade" required value={formData.dadosAcademicos.faculdadeId} onChange={handleChange} />
+                        
+                        <label>Código de Convite da Empresa <br />
+                            <input type="text" name="codigoEmpresa" placeholder="ABC-123" required value={formData.codigoEmpresa} onChange={handleChange} />
+                        </label>
+
+                        <label>CNPJ da Faculdade <br />
+                            <input type="text" name="dadosAcademicos.faculdadeCnpj" placeholder="00.000.000/0001-00" required value={formData.dadosAcademicos.faculdadeCnpj} onChange={handleChange} />
                         </label>
                         <label>Curso<br />
                             <input type="text" name="dadosAcademicos.curso" placeholder="Curso" required value={formData.dadosAcademicos.curso} onChange={handleChange} />

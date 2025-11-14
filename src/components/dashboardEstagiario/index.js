@@ -48,13 +48,93 @@ const Header = ({ userName }) => (
             <p>Aqui está o resumo do seu progresso</p>
         </div>
         <div className="header-right">
-            <button className="btn-primary">
-                <span className="btn-icon">✏️</span>
-                <span className="btn-text">Editar Perfil</span>
-            </button>
+            {/* Button moved to Informações tab */}
         </div>
     </header>
 );
+
+// Simple profile modal component
+const ProfileModal = ({ onClose }) => {
+    const { user } = useAuth();
+    const [profileData, setProfileData] = useState({
+        nome: user?.nome || '',
+        email: user?.email || '',
+        telefone: user?.telefone || ''
+    });
+    
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProfileData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // In a real application, this would call an API to update the profile
+        console.log('Profile updated:', profileData);
+        onClose();
+    };
+    
+    return (
+        <div className="evaluation-form-overlay">
+            <div className="evaluation-form-modal">
+                <div className="form-header">
+                    <h3>Editar Perfil</h3>
+                    <button className="close-btn" onClick={onClose}>×</button>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="form-body">
+                    <div className="form-group">
+                        <label htmlFor="nome">Nome:</label>
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            value={profileData.nome} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="email">Email:</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            value={profileData.email} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="telefone">Telefone:</label>
+                        <input 
+                            type="text" 
+                            id="telefone" 
+                            name="telefone" 
+                            value={profileData.telefone} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-actions">
+                        <button type="button" className="btn-secondary" onClick={onClose}>
+                            Cancelar
+                        </button>
+                        <button type="submit" className="btn-primary">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
 
 const StatsCard = () => (
     <div className="stats-overview">
@@ -89,61 +169,69 @@ const StatsCard = () => (
     </div>
 );
 
-const AbaInformacoes = ({ dadosEstagiario }) => (
+const AbaInformacoes = ({ dadosEstagiario, onEditProfile }) => (
     <div className="tab-content">
         <div className="info-grid">
             <div className="info-card">
-                <h3>Informações Pessoais</h3>
-                <div className="info-details">
-                    <div className="info-row">
-                        <span className="info-label">Nome:</span>
-                        <span className="info-value">{dadosEstagiario.nome}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Data de nascimento:</span>
-                        <span className="info-value">{dadosEstagiario.dataNascimento}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Gênero:</span>
-                        <span className="info-value">{dadosEstagiario.genero}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Email:</span>
-                        <span className="info-value">{dadosEstagiario.email}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Telefone:</span>
-                        <span className="info-value">{dadosEstagiario.telefone}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">CPF:</span>
-                        <span className="info-value">{dadosEstagiario.cpf}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Faculdade:</span>
-                        <span className="info-value">{dadosEstagiario.faculdade}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Curso:</span>
-                        <span className="info-value">{dadosEstagiario.curso}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Semestre:</span>
-                        <span className="info-value">{dadosEstagiario.semestre}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">R.A:</span>
-                        <span className="info-value">{dadosEstagiario.ra}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Endereço:</span>
-                        <span className="info-value">
-                            {dadosEstagiario.endereco?.logradouro}, {dadosEstagiario.endereco?.numero}
-                            <br />
-                            {dadosEstagiario.endereco?.bairro}, {dadosEstagiario.endereco?.cidade} - {dadosEstagiario.endereco?.estados}
-                            <br />
-                            CEP: {dadosEstagiario.endereco?.cep}
-                        </span>
+                <div className="card-header">
+                    <h3>Informações Pessoais</h3>
+                    <button className="btn-primary" onClick={onEditProfile}>
+                        <span className="btn-icon">✏️</span>
+                        <span className="btn-text">Editar Perfil</span>
+                    </button>
+                </div>
+                <div className="card-body">
+                    <div className="info-details">
+                        <div className="info-row">
+                            <span className="info-label">Nome:</span>
+                            <span className="info-value">{dadosEstagiario.nome}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Data de nascimento:</span>
+                            <span className="info-value">{dadosEstagiario.dataNascimento}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Gênero:</span>
+                            <span className="info-value">{dadosEstagiario.genero}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Email:</span>
+                            <span className="info-value">{dadosEstagiario.email}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Telefone:</span>
+                            <span className="info-value">{dadosEstagiario.telefone}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">CPF:</span>
+                            <span className="info-value">{dadosEstagiario.cpf}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Faculdade:</span>
+                            <span className="info-value">{dadosEstagiario.faculdade}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Curso:</span>
+                            <span className="info-value">{dadosEstagiario.curso}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Semestre:</span>
+                            <span className="info-value">{dadosEstagiario.semestre}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">R.A:</span>
+                            <span className="info-value">{dadosEstagiario.ra}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Endereço:</span>
+                            <span className="info-value">
+                                {dadosEstagiario.endereco?.logradouro}, {dadosEstagiario.endereco?.numero}
+                                <br />
+                                {dadosEstagiario.endereco?.bairro}, {dadosEstagiario.endereco?.cidade} - {dadosEstagiario.endereco?.estados}
+                                <br />
+                                CEP: {dadosEstagiario.endereco?.cep}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -368,6 +456,7 @@ function DashboardEstagiario({ initialTab = 'informacoes' }) {
     const { user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const [showProfileModal, setShowProfileModal] = useState(false);
     
     const [dashboardData, setDashboardData] = useState({
         dadosEstagiario: {
@@ -401,6 +490,14 @@ function DashboardEstagiario({ initialTab = 'informacoes' }) {
         const searchParams = new URLSearchParams(location.search);
         searchParams.set('tab', newTab);
         navigate({ search: searchParams.toString() });
+    };
+    
+    const handleEditProfile = () => {
+        setShowProfileModal(true);
+    };
+    
+    const closeModal = () => {
+        setShowProfileModal(false);
     };
 
     useEffect(() => {
@@ -462,15 +559,19 @@ function DashboardEstagiario({ initialTab = 'informacoes' }) {
         <div className="dashboard-layout">
             <Sidebar activeTab={activeTab} onTabChange={handleTabChange} />
             <div className="dashboard-main">
-                <Header userName={dashboardData.dadosEstagiario.nome.split(' ')[0]} />
+                <Header userName={dashboardData.dadosEstagiario.nome} />
                 <StatsCard />
                 <div className="tab-content-container">
-                    {activeTab === 'informacoes' && <AbaInformacoes dadosEstagiario={dashboardData.dadosEstagiario} />}
+                    {activeTab === 'informacoes' && <AbaInformacoes dadosEstagiario={dashboardData.dadosEstagiario} onEditProfile={handleEditProfile} />}
                     {activeTab === 'competencias' && <AbaCompetencias />}
                     {activeTab === 'feedbacks' && <AbaFeedbacks />}
                     {activeTab === 'conquistas' && <AbaConquistas />}
                 </div>
             </div>
+            
+            {showProfileModal && (
+                <ProfileModal onClose={closeModal} />
+            )}
         </div>
     );
 }

@@ -27,6 +27,15 @@ export const AuthProvider = ({ children }) => {
                 console.error("Error parsing user data:", error);
                 handleLogout();
             }
+        } else if (process.env.NODE_ENV === 'development') {
+            // Provide a default user in development mode
+            const defaultUser = {
+                username: 'devuser',
+                roles: ['ROLE_SUPERVISOR'],
+                isAuthenticated: true,
+                nome: 'Desenvolvedor'
+            };
+            setUser(defaultUser);
         }
     }, []);
 
@@ -76,9 +85,17 @@ export const AuthProvider = ({ children }) => {
         navigate('/login');
     };
 
+    // In development mode, always return authenticated
+    const isAuthenticated = process.env.NODE_ENV === 'development' ? true : !!user;
+
     const value = {
-        user,
-        isAuthenticated: !!user,
+        user: process.env.NODE_ENV === 'development' && !user ? {
+            username: 'devuser',
+            roles: ['ROLE_SUPERVISOR'],
+            isAuthenticated: true,
+            nome: 'Desenvolvedor'
+        } : user,
+        isAuthenticated,
         login: handleLogin,
         logout: handleLogout,
     };

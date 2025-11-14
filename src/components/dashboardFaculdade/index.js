@@ -49,13 +49,93 @@ const Header = ({ institutionName }) => (
             <p>Aqui está o resumo das atividades da sua instituição</p>
         </div>
         <div className="header-right">
-            <button className="btn-primary">
-                <span className="btn-icon">✏️</span>
-                <span className="btn-text">Editar Perfil</span>
-            </button>
+            {/* Button moved to Informações tab */}
         </div>
     </header>
 );
+
+// Simple profile modal component
+const ProfileModal = ({ onClose }) => {
+    const { user } = useAuth();
+    const [profileData, setProfileData] = useState({
+        nome: user?.nome || '',
+        email: user?.email || '',
+        telefone: user?.telefone || ''
+    });
+    
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProfileData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // In a real application, this would call an API to update the profile
+        console.log('Profile updated:', profileData);
+        onClose();
+    };
+    
+    return (
+        <div className="evaluation-form-overlay">
+            <div className="evaluation-form-modal">
+                <div className="form-header">
+                    <h3>Editar Perfil</h3>
+                    <button className="close-btn" onClick={onClose}>×</button>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="form-body">
+                    <div className="form-group">
+                        <label htmlFor="nome">Nome da Instituição:</label>
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            value={profileData.nome} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="email">Email:</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            value={profileData.email} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="telefone">Telefone:</label>
+                        <input 
+                            type="text" 
+                            id="telefone" 
+                            name="telefone" 
+                            value={profileData.telefone} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-actions">
+                        <button type="button" className="btn-secondary" onClick={onClose}>
+                            Cancelar
+                        </button>
+                        <button type="submit" className="btn-primary">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
 
 const StatsCard = () => (
     <div className="stats-overview">
@@ -90,41 +170,49 @@ const StatsCard = () => (
     </div>
 );
 
-const AbaInformacoes = ({ dadosFaculdade }) => (
+const AbaInformacoes = ({ dadosFaculdade, onEditProfile }) => (
     <div className="tab-content">
         <div className="info-grid">
             <div className="info-card">
-                <h3>Informações da Instituição</h3>
-                <div className="info-details">
-                    <div className="info-row">
-                        <span className="info-label">Nome:</span>
-                        <span className="info-value">{dadosFaculdade.nome}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">CNPJ:</span>
-                        <span className="info-value">{dadosFaculdade.cnpj}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Telefone:</span>
-                        <span className="info-value">{dadosFaculdade.telefone}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Email:</span>
-                        <span className="info-value">{dadosFaculdade.email}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Site:</span>
-                        <span className="info-value">{dadosFaculdade.site || 'Não informado'}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Endereço:</span>
-                        <span className="info-value">
-                            {dadosFaculdade.endereco?.logradouro}, {dadosFaculdade.endereco?.numero}
-                            <br />
-                            {dadosFaculdade.endereco?.bairro}, {dadosFaculdade.endereco?.cidade} - {dadosFaculdade.endereco?.estados}
-                            <br />
-                            CEP: {dadosFaculdade.endereco?.cep}
-                        </span>
+                <div className="card-header">
+                    <h3>Informações da Instituição</h3>
+                    <button className="btn-primary" onClick={onEditProfile}>
+                        <span className="btn-icon">✏️</span>
+                        <span className="btn-text">Editar Perfil</span>
+                    </button>
+                </div>
+                <div className="card-body">
+                    <div className="info-details">
+                        <div className="info-row">
+                            <span className="info-label">Nome:</span>
+                            <span className="info-value">{dadosFaculdade.nome}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">CNPJ:</span>
+                            <span className="info-value">{dadosFaculdade.cnpj}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Telefone:</span>
+                            <span className="info-value">{dadosFaculdade.telefone}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Email:</span>
+                            <span className="info-value">{dadosFaculdade.email}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Site:</span>
+                            <span className="info-value">{dadosFaculdade.site || 'Não informado'}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Endereço:</span>
+                            <span className="info-value">
+                                {dadosFaculdade.endereco?.logradouro}, {dadosFaculdade.endereco?.numero}
+                                <br />
+                                {dadosFaculdade.endereco?.bairro}, {dadosFaculdade.endereco?.cidade} - {dadosFaculdade.endereco?.estados}
+                                <br />
+                                CEP: {dadosFaculdade.endereco?.cep}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -371,10 +459,6 @@ const AbaRelatorios = () => (
                         <span className="btn-icon">📊</span>
                         <span className="btn-text">Gerar Relatório</span>
                     </button>
-                    <button className="btn-secondary">
-                        <span className="btn-icon">💾</span>
-                        <span className="btn-text">Exportar Dados</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -385,16 +469,17 @@ function DashboardFaculdade({ initialTab = 'informacoes' }) {
     const { user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const [showProfileModal, setShowProfileModal] = useState(false);
     
     const [dashboardData, setDashboardData] = useState({
         dadosFaculdade: {
             nome: "Universidade Tech",
             cnpj: "12.345.678/0001-90",
-            telefone: "(11) 3456-7890",
-            email: "contato@unitech.edu.br",
-            site: "www.unitech.edu.br",
+            telefone: "(11) 3333-4444",
+            email: "contato@universidadetech.edu.br",
+            site: "www.universidadetech.edu.br",
             endereco: {
-                logradouro: "Av. Paulista",
+                logradouro: "Avenida Paulista",
                 numero: "1000",
                 bairro: "Bela Vista",
                 cidade: "São Paulo",
@@ -413,6 +498,14 @@ function DashboardFaculdade({ initialTab = 'informacoes' }) {
         const searchParams = new URLSearchParams(location.search);
         searchParams.set('tab', newTab);
         navigate({ search: searchParams.toString() });
+    };
+    
+    const handleEditProfile = () => {
+        setShowProfileModal(true);
+    };
+    
+    const closeModal = () => {
+        setShowProfileModal(false);
     };
 
     useEffect(() => {
@@ -472,12 +565,16 @@ function DashboardFaculdade({ initialTab = 'informacoes' }) {
                 <Header institutionName={dashboardData.dadosFaculdade.nome} />
                 <StatsCard />
                 <div className="tab-content-container">
-                    {activeTab === 'informacoes' && <AbaInformacoes dadosFaculdade={dashboardData.dadosFaculdade} />}
+                    {activeTab === 'informacoes' && <AbaInformacoes dadosFaculdade={dashboardData.dadosFaculdade} onEditProfile={handleEditProfile} />}
                     {activeTab === 'estagiarios' && <AbaEstagiarios />}
                     {activeTab === 'avaliacoes' && <AbaAvaliacoes />}
                     {activeTab === 'relatorios' && <AbaRelatorios />}
                 </div>
             </div>
+            
+            {showProfileModal && (
+                <ProfileModal onClose={closeModal} />
+            )}
         </div>
     );
 }

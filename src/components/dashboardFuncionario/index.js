@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 // import * as api from '../../services/api'; // Commented out as it's not being used currently
+import FormularioAvaliacao from '../formularioAvaliacao';
 import './styles.css';
 
 const Sidebar = ({ activeTab, onTabChange }) => (
@@ -49,13 +50,93 @@ const Header = ({ userName }) => (
             <p>Aqui está o resumo das suas atividades</p>
         </div>
         <div className="header-right">
-            <button className="btn-primary">
-                <span className="btn-icon">✏️</span>
-                <span className="btn-text">Editar Perfil</span>
-            </button>
+            {/* Button moved to Informações tab */}
         </div>
     </header>
 );
+
+// Simple profile modal component
+const ProfileModal = ({ onClose }) => {
+    const { user } = useAuth();
+    const [profileData, setProfileData] = useState({
+        nome: user?.nome || '',
+        email: user?.email || '',
+        cargo: user?.cargo || ''
+    });
+    
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProfileData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // In a real application, this would call an API to update the profile
+        console.log('Profile updated:', profileData);
+        onClose();
+    };
+    
+    return (
+        <div className="evaluation-form-overlay">
+            <div className="evaluation-form-modal">
+                <div className="form-header">
+                    <h3>Editar Perfil</h3>
+                    <button className="close-btn" onClick={onClose}>×</button>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="form-body">
+                    <div className="form-group">
+                        <label htmlFor="nome">Nome:</label>
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            value={profileData.nome} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="email">Email:</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            value={profileData.email} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="cargo">Cargo:</label>
+                        <input 
+                            type="text" 
+                            id="cargo" 
+                            name="cargo" 
+                            value={profileData.cargo} 
+                            onChange={handleChange} 
+                            className="form-input"
+                        />
+                    </div>
+                    
+                    <div className="form-actions">
+                        <button type="button" className="btn-secondary" onClick={onClose}>
+                            Cancelar
+                        </button>
+                        <button type="submit" className="btn-primary">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
 
 const StatsCard = () => (
     <div className="stats-overview">
@@ -90,27 +171,35 @@ const StatsCard = () => (
     </div>
 );
 
-const AbaInformacoes = ({ dadosFuncionario }) => (
+const AbaInformacoes = ({ dadosFuncionario, onEditProfile }) => (
     <div className="tab-content">
         <div className="info-grid">
             <div className="info-card">
-                <h3>Informações Pessoais</h3>
-                <div className="info-details">
-                    <div className="info-row">
-                        <span className="info-label">Nome:</span>
-                        <span className="info-value">{dadosFuncionario.nome}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Cargo:</span>
-                        <span className="info-value">{dadosFuncionario.cargo}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Email:</span>
-                        <span className="info-value">{dadosFuncionario.email}</span>
-                    </div>
-                    <div className="info-row">
-                        <span className="info-label">Empresa:</span>
-                        <span className="info-value">{dadosFuncionario.empresa}</span>
+                <div className="card-header">
+                    <h3>Informações Pessoais</h3>
+                    <button className="btn-primary" onClick={onEditProfile}>
+                        <span className="btn-icon">✏️</span>
+                        <span className="btn-text">Editar Perfil</span>
+                    </button>
+                </div>
+                <div className="card-body">
+                    <div className="info-details">
+                        <div className="info-row">
+                            <span className="info-label">Nome:</span>
+                            <span className="info-value">{dadosFuncionario.nome}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Cargo:</span>
+                            <span className="info-value">{dadosFuncionario.cargo}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Email:</span>
+                            <span className="info-value">{dadosFuncionario.email}</span>
+                        </div>
+                        <div className="info-row">
+                            <span className="info-label">Empresa:</span>
+                            <span className="info-value">{dadosFuncionario.empresa}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -176,6 +265,8 @@ const AbaEstagiarios = () => (
 
 const AbaAvaliacoes = () => {
     const [selectedIntern, setSelectedIntern] = useState(null);
+    const [showEvaluationForm, setShowEvaluationForm] = useState(false);
+    const [evaluations, setEvaluations] = useState({});
     
     // Mock data for interns
     const interns = [
@@ -186,7 +277,7 @@ const AbaAvaliacoes = () => {
     ];
     
     // Mock data for evaluations
-    const evaluations = {
+    const initialEvaluations = {
         1: [
             {
                 id: 1,
@@ -237,6 +328,30 @@ const AbaAvaliacoes = () => {
                 company: 'Tech Solutions'
             }
         ]
+    };
+    
+    useEffect(() => {
+        setEvaluations(initialEvaluations);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    
+    const handleAddEvaluation = (evaluationData) => {
+        const newEvaluation = {
+            id: Date.now(), // Simple ID generation
+            date: evaluationData.data,
+            text: evaluationData.descricao,
+            rating: evaluationData.classificacao,
+            company: 'Tech Solutions'
+        };
+        
+        setEvaluations(prev => ({
+            ...prev,
+            [evaluationData.estagiarioId]: [
+                ...(prev[evaluationData.estagiarioId] || []),
+                newEvaluation
+            ]
+        }));
+        
+        setShowEvaluationForm(false);
     };
     
     const renderStars = (rating) => {
@@ -293,30 +408,16 @@ const AbaAvaliacoes = () => {
                                 )}
                             </div>
                             
-                            {/* Add new evaluation form */}
-                            <div className="card evaluation-form">
-                                <h4>Registrar Nova Avaliação</h4>
-                                <form className="form">
-                                    <div className="form-group">
-                                        <label>Descrição da Avaliação:</label>
-                                        <textarea 
-                                            placeholder="Descreva o desempenho do estagiário..."
-                                            className="form-textarea"
-                                        ></textarea>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Classificação:</label>
-                                        <div className="rating-input">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <span key={star} className="star-input">★</span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <button type="submit" className="btn-primary">
-                                        <span className="btn-icon">⭐</span>
-                                        <span className="btn-text">Registrar Avaliação</span>
-                                    </button>
-                                </form>
+                            {/* Add new evaluation button */}
+                            <div className="form-actions">
+                                <button 
+                                    type="button" 
+                                    className="btn-primary"
+                                    onClick={() => setShowEvaluationForm(true)}
+                                >
+                                    <span className="btn-icon">⭐</span>
+                                    <span className="btn-text">Nova Avaliação</span>
+                                </button>
                             </div>
                         </div>
                     ) : (
@@ -326,6 +427,15 @@ const AbaAvaliacoes = () => {
                     )}
                 </div>
             </div>
+            
+            {/* Evaluation Form Modal */}
+            {showEvaluationForm && selectedIntern && (
+                <FormularioAvaliacao
+                    intern={interns.find(i => i.id === selectedIntern)}
+                    onSubmit={handleAddEvaluation}
+                    onCancel={() => setShowEvaluationForm(false)}
+                />
+            )}
         </div>
     );
 };
@@ -373,10 +483,6 @@ const AbaRelatorios = () => (
                         <span className="btn-icon">📊</span>
                         <span className="btn-text">Gerar Relatório</span>
                     </button>
-                    <button className="btn-secondary">
-                        <span className="btn-icon">💾</span>
-                        <span className="btn-text">Exportar Dados</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -387,6 +493,7 @@ function DashboardFuncionario({ initialTab = 'informacoes' }) {
     const { user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const [showProfileModal, setShowProfileModal] = useState(false);
     
     const [dashboardData, setDashboardData] = useState({
         dadosFuncionario: {
@@ -406,6 +513,14 @@ function DashboardFuncionario({ initialTab = 'informacoes' }) {
         const searchParams = new URLSearchParams(location.search);
         searchParams.set('tab', newTab);
         navigate({ search: searchParams.toString() });
+    };
+    
+    const handleEditProfile = () => {
+        setShowProfileModal(true);
+    };
+    
+    const closeModal = () => {
+        setShowProfileModal(false);
     };
 
     useEffect(() => {
@@ -456,12 +571,16 @@ function DashboardFuncionario({ initialTab = 'informacoes' }) {
                 <Header userName={dashboardData.dadosFuncionario.nome} />
                 <StatsCard />
                 <div className="tab-content-container">
-                    {activeTab === 'informacoes' && <AbaInformacoes dadosFuncionario={dashboardData.dadosFuncionario} />}
+                    {activeTab === 'informacoes' && <AbaInformacoes dadosFuncionario={dashboardData.dadosFuncionario} onEditProfile={handleEditProfile} />}
                     {activeTab === 'estagiarios' && <AbaEstagiarios />}
                     {activeTab === 'avaliacoes' && <AbaAvaliacoes />}
                     {activeTab === 'relatorios' && <AbaRelatorios />}
                 </div>
             </div>
+            
+            {showProfileModal && (
+                <ProfileModal onClose={closeModal} />
+            )}
         </div>
     );
 }
