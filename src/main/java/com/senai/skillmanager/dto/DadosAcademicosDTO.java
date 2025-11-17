@@ -1,14 +1,11 @@
 package com.senai.skillmanager.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import java.time.YearMonth;
 
 public class DadosAcademicosDTO {
 
     @NotBlank(message = "O CNPJ da faculdade é obrigatório.")
-    @Pattern(regexp = "^[0-9]{14}$", message = "O CNPJ da faculdade deve ter 14 dígitos numéricos.")
     private String faculdadeCnpj;
 
     @NotBlank(message = "O curso é obrigatório.")
@@ -17,11 +14,11 @@ public class DadosAcademicosDTO {
     @NotBlank(message = "O período/semestre é obrigatório.")
     private String periodoSemestre;
 
-    @NotNull(message = "A previsão de formatura é obrigatória.")
-    private YearMonth previsaoFormatura;
+    @NotBlank(message = "A previsão de formatura é obrigatória.")
+    @Pattern(regexp = "^\\d{4}-\\d{2}$", message = "O formato da previsão de formatura deve ser YYYY-MM")
+    private String previsaoFormatura;
 
     @NotBlank(message = "O R.A. é obrigatório.")
-    @Pattern(regexp = "\\d{6,12}", message = "O RA deve conter apenas dígitos numéricos (6 a 12).")
     private String ra;
 
     public String getFaculdadeCnpj() {
@@ -48,11 +45,11 @@ public class DadosAcademicosDTO {
         this.periodoSemestre = periodoSemestre;
     }
 
-    public YearMonth getPrevisaoFormatura() {
+    public String getPrevisaoFormatura() {
         return previsaoFormatura;
     }
 
-    public void setPrevisaoFormatura(YearMonth previsaoFormatura) {
+    public void setPrevisaoFormatura(String previsaoFormatura) {
         this.previsaoFormatura = previsaoFormatura;
     }
 

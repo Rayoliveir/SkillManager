@@ -1,26 +1,13 @@
 package com.senai.skillmanager.dto;
 
-import java.time.YearMonth;
-
 public class DadosAcademicosResponseDTO {
+
     private Long id;
     private FaculdadeResponseDTO faculdade;
     private String curso;
     private String periodoSemestre;
-    private YearMonth previsaoFormatura;
+    private String previsaoFormatura;
     private String ra;
-
-    public DadosAcademicosResponseDTO() {
-    }
-
-    public DadosAcademicosResponseDTO(Long id, FaculdadeResponseDTO faculdade, String curso, String periodoSemestre, YearMonth previsaoFormatura, String ra) {
-        this.id = id;
-        this.faculdade = faculdade;
-        this.curso = curso;
-        this.periodoSemestre = periodoSemestre;
-        this.previsaoFormatura = previsaoFormatura;
-        this.ra = ra;
-    }
 
     public Long getId() {
         return id;
@@ -54,11 +41,11 @@ public class DadosAcademicosResponseDTO {
         this.periodoSemestre = periodoSemestre;
     }
 
-    public YearMonth getPrevisaoFormatura() {
+    public String getPrevisaoFormatura() {
         return previsaoFormatura;
     }
 
-    public void setPrevisaoFormatura(YearMonth previsaoFormatura) {
+    public void setPrevisaoFormatura(String previsaoFormatura) {
         this.previsaoFormatura = previsaoFormatura;
     }
 

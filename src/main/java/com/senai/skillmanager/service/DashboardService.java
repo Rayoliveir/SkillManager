@@ -2,15 +2,16 @@ package com.senai.skillmanager.service;
 
 import com.senai.skillmanager.dto.AvaliacaoResponseDTO;
 import com.senai.skillmanager.dto.DashboardEstagiarioDTO;
-import com.senai.skillmanager.dto.EstagiarioResponseDTO;
+import com.senai.skillmanager.dto.DashboardResponseDTO;
+import com.senai.skillmanager.model.empresa.Supervisor;
 import com.senai.skillmanager.model.estagiario.Estagiario;
 import com.senai.skillmanager.model.faculdade.Coordenador;
-import com.senai.skillmanager.model.empresa.Supervisor;
-import com.senai.skillmanager.repository.EstagiarioRepository;
 import com.senai.skillmanager.repository.CoordenadorRepository;
+import com.senai.skillmanager.repository.EstagiarioRepository;
 import com.senai.skillmanager.repository.SupervisorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,67 +20,83 @@ import java.util.stream.Collectors;
 @Service
 public class DashboardService {
 
+    private final EstagiarioRepository estagiarioRepository;
     private final SupervisorRepository supervisorRepository;
     private final CoordenadorRepository coordenadorRepository;
-    private final EstagiarioRepository estagiarioRepository;
-    private final EstagiarioService estagiarioService;
     private final AvaliacaoService avaliacaoService;
+    private final EstagiarioService estagiarioService; // Adicionado
 
-    public DashboardService(SupervisorRepository supervisorRepository,
+    public DashboardService(EstagiarioRepository estagiarioRepository,
+                            SupervisorRepository supervisorRepository,
                             CoordenadorRepository coordenadorRepository,
-                            EstagiarioRepository estagiarioRepository,
-                            EstagiarioService estagiarioService,
-                            AvaliacaoService avaliacaoService) {
+                            AvaliacaoService avaliacaoService,
+                            EstagiarioService estagiarioService) { // Adicionado
+        this.estagiarioRepository = estagiarioRepository;
         this.supervisorRepository = supervisorRepository;
         this.coordenadorRepository = coordenadorRepository;
-        this.estagiarioRepository = estagiarioRepository;
-        this.estagiarioService = estagiarioService;
         this.avaliacaoService = avaliacaoService;
+        this.estagiarioService = estagiarioService; // Adicionado
     }
 
-    public List<EstagiarioResponseDTO> getSupervisorDashboardData(Authentication authentication) {
+    public DashboardResponseDTO getDashboardData(Authentication authentication) {
         String email = authentication.getName();
-        Supervisor supervisor = supervisorRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Supervisor não encontrado."));
+        DashboardResponseDTO response = new DashboardResponseDTO();
 
-        Long empresaId = supervisor.getEmpresa().getId();
-        return estagiarioRepository.findByEmpresaId(empresaId).stream()
-                .map(estagiarioService::toResponseDTO)
-                .collect(Collectors.toList());
-    }
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ESTAGIARIO"))) {
+            Estagiario estagiario = estagiarioRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("Estagiário não encontrado."));
 
-    public List<DashboardEstagiarioDTO> getFaculdadeDashboardData(Authentication authentication) {
-        String email = authentication.getName();
+            response.setNomeUsuario(estagiario.getNome());
+            response.setDescricaoPrincipal("Meu Progresso");
 
-        Coordenador coordenador = coordenadorRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Coordenador não encontrado."));
+            // Buscar dados para o DTO do estagiário
+            List<AvaliacaoResponseDTO> avaliacoes = avaliacaoService.listarPorEstagiario(estagiario.getId(), authentication);
 
-        Long faculdadeId = coordenador.getFaculdade().getId();
+            // Criar e preencher o seu DTO
+            DashboardEstagiarioDTO estagiarioDTO = new DashboardEstagiarioDTO();
+            estagiarioDTO.setDadosEstagiario(estagiarioService.toResponseDTO(estagiario));
+            estagiarioDTO.setAvaliacoes(avaliacoes);
 
-        List<Estagiario> estagiariosDaFaculdade = estagiarioRepository.findByDadosAcademicos_Faculdade_Id(faculdadeId);
+            // Adicionar o seu DTO à resposta principal
+            response.setDashboardEstagiario(estagiarioDTO);
 
-        return estagiariosDaFaculdade.stream()
-                .map(estagiario -> buildEstagiarioDashboard(estagiario.getId(), authentication))
-                .collect(Collectors.toList());
-    }
+        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUPERVISOR")) ||
+                authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GERENTE"))) {
 
-    public DashboardEstagiarioDTO getEstagiarioDashboardData(Authentication authentication) {
-        String email = authentication.getName();
-        Long estagiarioId = estagiarioRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Estagiário não encontrado."))
-                .getId();
+            Supervisor supervisor = supervisorRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("Supervisor não encontrado."));
 
-        return buildEstagiarioDashboard(estagiarioId, authentication);
-    }
+            response.setNomeUsuario(supervisor.getNome());
+            response.setDescricaoPrincipal("Estagiários da Empresa: " + supervisor.getEmpresa().getNome());
 
-    private DashboardEstagiarioDTO buildEstagiarioDashboard(Long estagiarioId, Authentication authentication) {
-        EstagiarioResponseDTO estagiarioDTO = estagiarioService.buscarPorId(estagiarioId, authentication);
-        List<AvaliacaoResponseDTO> avaliacoes = avaliacaoService.listarPorEstagiario(estagiarioId);
+            List<Estagiario> estagiariosDaEmpresa = estagiarioRepository.findByEmpresaId(supervisor.getEmpresa().getId());
+            response.setTotalEstagiarios(estagiariosDaEmpresa.size());
 
-        DashboardEstagiarioDTO dashboardData = new DashboardEstagiarioDTO();
-        dashboardData.setDadosEstagiario(estagiarioDTO);
-        dashboardData.setAvaliacoes(avaliacoes);
+            List<String> nomesEstagiarios = estagiariosDaEmpresa.stream()
+                    .map(Estagiario::getNome)
+                    .collect(Collectors.toList());
+            response.setListaNomesEstagiarios(nomesEstagiarios);
 
-        return dashboardData;
+        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_FACULDADE"))) {
+
+            Coordenador coordenador = coordenadorRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("Coordenador não encontrado."));
+
+            response.setNomeUsuario(coordenador.getNome());
+            response.setDescricaoPrincipal("Estagiários da Faculdade: " + coordenador.getFaculdade().getNome());
+
+            List<Estagiario> estagiariosDaFaculdade = estagiarioRepository.findByDadosAcademicos_Faculdade_Id(coordenador.getFaculdade().getId());
+            response.setTotalEstagiarios(estagiariosDaFaculdade.size());
+
+            List<String> nomesEstagiarios = estagiariosDaFaculdade.stream()
+                    .map(Estagiario::getNome)
+                    .collect(Collectors.toList());
+            response.setListaNomesEstagiarios(nomesEstagiarios);
+        } else {
+            response.setNomeUsuario("Administrador");
+            response.setDescricaoPrincipal("Visão Geral do Sistema");
+        }
+
+        return response;
     }
 }

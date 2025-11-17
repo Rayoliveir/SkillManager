@@ -1,39 +1,36 @@
 package com.senai.skillmanager.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-// DTO para CRIAR uma nova avaliação
 public class AvaliacaoDTO {
 
-    @NotBlank
+    @NotBlank(message = "O título é obrigatório.")
+    @Size(max = 100, message = "O título deve ter no máximo 100 caracteres.")
     private String titulo;
-    private String feedbackPositivo;
-    private String pontosDeMelhoria;
 
-    @NotNull
-    @Min(1)
-    @Max(5)
-    private Integer notaFrequencia;
-    @NotNull
-    @Min(1)
-    @Max(5)
+    @Size(max = 1000, message = "O feedback deve ter no máximo 1000 caracteres.")
+    private String feedback;
+
+    @NotNull(message = "A nota de desempenho é obrigatória.")
+    @Min(value = 1, message = "A nota deve ser no mínimo 1.")
+    @Max(value = 5, message = "A nota deve ser no máximo 5.")
     private Integer notaDesempenho;
-    @NotNull
-    @Min(1)
-    @Max(5)
-    private Integer notaOrganizacao;
-    @NotNull
-    @Min(1)
-    @Max(5)
-    private Integer notaParticipacao;
-    @NotNull
-    @Min(1)
-    @Max(5)
-    private Integer notaComportamento;
 
-    @NotNull
-    private Long supervisorId;
-    @NotNull
+    @NotNull(message = "A nota de habilidades técnicas é obrigatória.")
+    @Min(value = 1, message = "A nota deve ser no mínimo 1.")
+    @Max(value = 5, message = "A nota deve ser no máximo 5.")
+    private Integer notaHabilidadesTecnicas;
+
+    @NotNull(message = "A nota de habilidades comportamentais é obrigatória.")
+    @Min(value = 1, message = "A nota deve ser no mínimo 1.")
+    @Max(value = 5, message = "A nota deve ser no máximo 5.")
+    private Integer notaHabilidadesComportamentais;
+
+    @NotNull(message = "O ID do estagiário é obrigatório.")
     private Long estagiarioId;
 
     public String getTitulo() {
@@ -44,28 +41,12 @@ public class AvaliacaoDTO {
         this.titulo = titulo;
     }
 
-    public String getFeedbackPositivo() {
-        return feedbackPositivo;
+    public String getFeedback() {
+        return feedback;
     }
 
-    public void setFeedbackPositivo(String feedbackPositivo) {
-        this.feedbackPositivo = feedbackPositivo;
-    }
-
-    public String getPontosDeMelhoria() {
-        return pontosDeMelhoria;
-    }
-
-    public void setPontosDeMelhoria(String pontosDeMelhoria) {
-        this.pontosDeMelhoria = pontosDeMelhoria;
-    }
-
-    public Integer getNotaFrequencia() {
-        return notaFrequencia;
-    }
-
-    public void setNotaFrequencia(Integer notaFrequencia) {
-        this.notaFrequencia = notaFrequencia;
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
     public Integer getNotaDesempenho() {
@@ -76,36 +57,20 @@ public class AvaliacaoDTO {
         this.notaDesempenho = notaDesempenho;
     }
 
-    public Integer getNotaOrganizacao() {
-        return notaOrganizacao;
+    public Integer getNotaHabilidadesTecnicas() {
+        return notaHabilidadesTecnicas;
     }
 
-    public void setNotaOrganizacao(Integer notaOrganizacao) {
-        this.notaOrganizacao = notaOrganizacao;
+    public void setNotaHabilidadesTecnicas(Integer notaHabilidadesTecnicas) {
+        this.notaHabilidadesTecnicas = notaHabilidadesTecnicas;
     }
 
-    public Integer getNotaParticipacao() {
-        return notaParticipacao;
+    public Integer getNotaHabilidadesComportamentais() {
+        return notaHabilidadesComportamentais;
     }
 
-    public void setNotaParticipacao(Integer notaParticipacao) {
-        this.notaParticipacao = notaParticipacao;
-    }
-
-    public Integer getNotaComportamento() {
-        return notaComportamento;
-    }
-
-    public void setNotaComportamento(Integer notaComportamento) {
-        this.notaComportamento = notaComportamento;
-    }
-
-    public Long getSupervisorId() {
-        return supervisorId;
-    }
-
-    public void setSupervisorId(Long supervisorId) {
-        this.supervisorId = supervisorId;
+    public void setNotaHabilidadesComportamentais(Integer notaHabilidadesComportamentais) {
+        this.notaHabilidadesComportamentais = notaHabilidadesComportamentais;
     }
 
     public Long getEstagiarioId() {

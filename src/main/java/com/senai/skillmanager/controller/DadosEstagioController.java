@@ -11,50 +11,50 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/dados-estagio")
 @CrossOrigin(origins = "*")
 public class DadosEstagioController {
+
     private final DadosEstagioService dadosEstagioService;
 
     public DadosEstagioController(DadosEstagioService dadosEstagioService) {
         this.dadosEstagioService = dadosEstagioService;
     }
 
+    @PostMapping
+    @PreAuthorize("hasAnyRole('GERENTE', 'SUPERVISOR')")
+    public ResponseEntity<DadosEstagioResponseDTO> salvar(@Valid @RequestBody DadosEstagioDTO dto, Authentication authentication) {
+        DadosEstagioResponseDTO response = dadosEstagioService.salvar(dto, authentication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<DadosEstagioResponseDTO>> listarTodos() {
-        return ResponseEntity.ok(dadosEstagioService.listarTodos());
+        List<DadosEstagioResponseDTO> response = dadosEstagioService.listarTodos();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<DadosEstagioResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(dadosEstagioService.buscarPorId(id));
-    }
-
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR', 'GERENTE')")
-    public ResponseEntity<Map<Object, String>> salvar(@Valid @RequestBody DadosEstagioDTO dto, Authentication authentication) {
-        dadosEstagioService.salvar(dto, authentication);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(Map.of("mensagem", "Dados de estágio cadastrados com sucesso."));
+    public ResponseEntity<DadosEstagioResponseDTO> buscarPorId(@PathVariable Long id, Authentication authentication) {
+        DadosEstagioResponseDTO response = dadosEstagioService.buscarPorId(id, authentication);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR', 'GERENTE')")
-    public ResponseEntity<Map<Object, String>> atualizar(@PathVariable Long id, @Valid @RequestBody DadosEstagioDTO dto, Authentication authentication) {
-        dadosEstagioService.atualizar(id, dto, authentication);
-        return ResponseEntity.ok(Map.of("mensagem", "Dados de estágio atualizados com sucesso."));
+    @PreAuthorize("hasAnyRole('GERENTE', 'SUPERVISOR')")
+    public ResponseEntity<DadosEstagioResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody DadosEstagioDTO dto, Authentication authentication) {
+        DadosEstagioResponseDTO response = dadosEstagioService.atualizar(id, dto, authentication);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR', 'GERENTE')")
-    public ResponseEntity<Map<Object, String>> excluir(@PathVariable Long id) {
+    @PreAuthorize("hasAnyRole('GERENTE', 'SUPERVISOR', 'ADMIN')")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
         dadosEstagioService.excluir(id);
-        return ResponseEntity.ok(Map.of("mensagem", "Dados de estágio excluídos com sucesso."));
+        return ResponseEntity.noContent().build();
     }
 }

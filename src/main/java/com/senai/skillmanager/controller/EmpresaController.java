@@ -22,29 +22,29 @@ public class EmpresaController {
         this.empresaService = empresaService;
     }
 
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EmpresaResponseDTO> salvar(@Valid @RequestBody EmpresaDTO dto) {
+        EmpresaResponseDTO empresaSalva = empresaService.salvar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(empresaSalva);
+    }
+
     @GetMapping
-    @PreAuthorize("isAuthenticated()") // Qualquer usuário autenticado pode listar empresas
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EmpresaResponseDTO>> listarTodos() {
-        return ResponseEntity.ok(empresaService.listarTodos());
+        List<EmpresaResponseDTO> empresas = empresaService.listarTodos();
+        return ResponseEntity.ok(empresas);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()") // Qualquer usuário autenticado pode ver uma empresa
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmpresaResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(empresaService.buscarPorId(id));
-    }
-
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')") // Apenas Admin pode criar uma empresa manualmente
-    public ResponseEntity<EmpresaResponseDTO> salvar(@Valid @RequestBody EmpresaDTO dto) {
-        EmpresaResponseDTO empresaSalva = empresaService.salvar(dto);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(empresaSalva);
+        EmpresaResponseDTO empresa = empresaService.buscarPorId(id);
+        return ResponseEntity.ok(empresa);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')") // Apenas Admin pode atualizar os dados da instituição
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmpresaResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody EmpresaDTO dto) {
         EmpresaResponseDTO empresaAtualizada = empresaService.atualizar(id, dto);
         return ResponseEntity.ok(empresaAtualizada);

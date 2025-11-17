@@ -4,52 +4,36 @@ import com.senai.skillmanager.model.faculdade.Faculdade;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-
 import java.time.YearMonth;
 
 @Entity
 @Table(name = "tab_dados_academicos")
 public class DadosAcademicos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "faculdade_id", nullable = false)
-    @NotNull(message = "A faculdade é obrigatória.")
-    private Faculdade faculdade; // NOME CORRIGIDO AQUI
+    private Faculdade faculdade;
 
-    @Column(nullable = false)
     @NotBlank(message = "O curso é obrigatório.")
+    @Column(nullable = false)
     private String curso;
 
-    @Column(nullable = false)
     @NotBlank(message = "O período/semestre é obrigatório.")
+    @Column(nullable = false)
     private String periodoSemestre;
 
-    @Column(nullable = false)
     @NotNull(message = "A previsão de formatura é obrigatória.")
+    @Column(nullable = false)
     private YearMonth previsaoFormatura;
 
-    @Column(nullable = false)
     @NotBlank(message = "O R.A. é obrigatório.")
-    @Pattern(regexp = "\\d{6,12}", message = "O RA deve conter apenas dígitos numéricos (6 a 12).")
+    @Column(nullable = false, unique = true)
     private String ra;
 
-    public DadosAcademicos() {
-    }
-
-    public DadosAcademicos(Long id, Faculdade faculdade, String curso, String periodoSemestre, YearMonth previsaoFormatura, String ra) {
-        this.id = id;
-        this.faculdade = faculdade;
-        this.curso = curso;
-        this.periodoSemestre = periodoSemestre;
-        this.previsaoFormatura = previsaoFormatura;
-        this.ra = ra;
-    }
-
-    // Getters e Setters
     public Long getId() {
         return id;
     }

@@ -1,22 +1,19 @@
 package com.senai.skillmanager.dto;
 
 import com.senai.skillmanager.model.estagiario.TipoEstagio;
+
 import java.time.LocalDate;
 
 public class DadosEstagioResponseDTO {
+
     private Long id;
     private String titulo;
-    private TipoEstagio tipo;
-    private int cargaHorariaSemanal;
-    private boolean isRemunerado;
     private LocalDate dataInicio;
     private LocalDate dataTermino;
-    private String observacoes;
+    private Integer cargaHoraria;
+    private TipoEstagio tipoEstagio;
     private SupervisorResponseDTO supervisor;
     private EstagiarioResponseDTO estagiario;
-
-    public DadosEstagioResponseDTO() {
-    }
 
     public Long getId() {
         return id;
@@ -32,30 +29,6 @@ public class DadosEstagioResponseDTO {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
-    }
-
-    public TipoEstagio getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoEstagio tipo) {
-        this.tipo = tipo;
-    }
-
-    public int getCargaHorariaSemanal() {
-        return cargaHorariaSemanal;
-    }
-
-    public void setCargaHorariaSemanal(int cargaHorariaSemanal) {
-        this.cargaHorariaSemanal = cargaHorariaSemanal;
-    }
-
-    public boolean getIsRemunerado() {
-        return isRemunerado;
-    }
-
-    public void setIsRemunerado(boolean isRemunerado) {
-        this.isRemunerado = isRemunerado;
     }
 
     public LocalDate getDataInicio() {
@@ -74,12 +47,20 @@ public class DadosEstagioResponseDTO {
         this.dataTermino = dataTermino;
     }
 
-    public String getObservacoes() {
-        return observacoes;
+    public Integer getCargaHoraria() {
+        return cargaHoraria;
     }
 
-    public void setObservacoes(String observacoes) {
-        this.observacoes = observacoes;
+    public void setCargaHoraria(Integer cargaHoraria) {
+        this.cargaHoraria = cargaHoraria;
+    }
+
+    public TipoEstagio getTipoEstagio() {
+        return tipoEstagio;
+    }
+
+    public void setTipoEstagio(TipoEstagio tipoEstagio) {
+        this.tipoEstagio = tipoEstagio;
     }
 
     public SupervisorResponseDTO getSupervisor() {

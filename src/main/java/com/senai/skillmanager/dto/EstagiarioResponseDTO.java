@@ -2,9 +2,9 @@ package com.senai.skillmanager.dto;
 
 import com.senai.skillmanager.model.Genero;
 import java.time.LocalDate;
-import java.util.List;
 
 public class EstagiarioResponseDTO {
+
     private Long id;
     private String nome;
     private LocalDate dataNascimento;
@@ -12,11 +12,10 @@ public class EstagiarioResponseDTO {
     private String telefone;
     private String email;
     private String cpf;
-    private EnderecoResponseDTO endereco; // <-- Ajustado para usar o DTO de resposta
-    private DadosAcademicosResponseDTO dadosAcademicos; // <-- Ajustado para usar o DTO de resposta
-    private List<DadosEstagioResponseDTO> dadosEstagio;
+    private EmpresaResponseDTO empresa;
+    private EnderecoDTO endereco;
+    private DadosAcademicosResponseDTO dadosAcademicos;
 
-    // Getters e Setters...
     public Long getId() {
         return id;
     }
@@ -73,11 +72,19 @@ public class EstagiarioResponseDTO {
         this.cpf = cpf;
     }
 
-    public EnderecoResponseDTO getEndereco() {
+    public EmpresaResponseDTO getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(EmpresaResponseDTO empresa) {
+        this.empresa = empresa;
+    }
+
+    public EnderecoDTO getEndereco() {
         return endereco;
     }
 
-    public void setEndereco(EnderecoResponseDTO endereco) {
+    public void setEndereco(EnderecoDTO endereco) {
         this.endereco = endereco;
     }
 
@@ -87,13 +94,5 @@ public class EstagiarioResponseDTO {
 
     public void setDadosAcademicos(DadosAcademicosResponseDTO dadosAcademicos) {
         this.dadosAcademicos = dadosAcademicos;
-    }
-
-    public List<DadosEstagioResponseDTO> getDadosEstagio() {
-        return dadosEstagio;
-    }
-
-    public void setDadosEstagio(List<DadosEstagioResponseDTO> dadosEstagio) {
-        this.dadosEstagio = dadosEstagio;
     }
 }

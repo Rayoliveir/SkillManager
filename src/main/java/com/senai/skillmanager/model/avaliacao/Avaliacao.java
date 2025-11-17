@@ -1,10 +1,11 @@
 package com.senai.skillmanager.model.avaliacao;
 
-import com.senai.skillmanager.model.estagiario.Estagiario;
 import com.senai.skillmanager.model.empresa.Supervisor;
+import com.senai.skillmanager.model.estagiario.Estagiario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -16,66 +17,35 @@ public class Avaliacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "O título é obrigatório.")
     private String titulo;
 
-    @Column(columnDefinition = "TEXT")
-    private String feedbackPositivo;
+    @Column
+    private String feedback;
 
-    @Column(columnDefinition = "TEXT")
-    private String pontosDeMelhoria;
-
-    @Min(1)
-    @Max(5)
-    private Integer notaFrequencia;
-
-    @Min(1)
-    @Max(5)
+    @NotNull
+    @Min(1) @Max(5)
     private Integer notaDesempenho;
 
-    @Min(1)
-    @Max(5)
-    private Integer notaOrganizacao;
-
-    @Min(1)
-    @Max(5)
-    private Integer notaParticipacao;
-
-    @Min(1)
-    @Max(5)
-    private Integer notaComportamento;
+    @NotNull
+    @Min(1) @Max(5)
+    private Integer notaHabilidadesTecnicas;
 
     @NotNull
-    @Column(nullable = false)
+    @Min(1) @Max(5)
+    private Integer notaHabilidadesComportamentais;
+
+    @NotNull
     private LocalDate dataAvaliacao;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "supervisor_id", nullable = false)
     private Supervisor supervisor;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "estagiario_id", nullable = false)
     private Estagiario estagiario;
 
-    public Avaliacao() {
-    }
-
-    public Avaliacao(Long id, String titulo, String feedbackPositivo, String pontosDeMelhoria, Integer notaFrequencia, Integer notaDesempenho, Integer notaOrganizacao, Integer notaParticipacao, Integer notaComportamento, LocalDate dataAvaliacao, Supervisor supervisor, Estagiario estagiario) {
-        this.id = id;
-        this.titulo = titulo;
-        this.feedbackPositivo = feedbackPositivo;
-        this.pontosDeMelhoria = pontosDeMelhoria;
-        this.notaFrequencia = notaFrequencia;
-        this.notaDesempenho = notaDesempenho;
-        this.notaOrganizacao = notaOrganizacao;
-        this.notaParticipacao = notaParticipacao;
-        this.notaComportamento = notaComportamento;
-        this.dataAvaliacao = dataAvaliacao;
-        this.supervisor = supervisor;
-        this.estagiario = estagiario;
-    }
 
     public Long getId() {
         return id;
@@ -93,28 +63,12 @@ public class Avaliacao {
         this.titulo = titulo;
     }
 
-    public String getFeedbackPositivo() {
-        return feedbackPositivo;
+    public String getFeedback() {
+        return feedback;
     }
 
-    public void setFeedbackPositivo(String feedbackPositivo) {
-        this.feedbackPositivo = feedbackPositivo;
-    }
-
-    public String getPontosDeMelhoria() {
-        return pontosDeMelhoria;
-    }
-
-    public void setPontosDeMelhoria(String pontosDeMelhoria) {
-        this.pontosDeMelhoria = pontosDeMelhoria;
-    }
-
-    public Integer getNotaFrequencia() {
-        return notaFrequencia;
-    }
-
-    public void setNotaFrequencia(Integer notaFrequencia) {
-        this.notaFrequencia = notaFrequencia;
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
     public Integer getNotaDesempenho() {
@@ -125,28 +79,20 @@ public class Avaliacao {
         this.notaDesempenho = notaDesempenho;
     }
 
-    public Integer getNotaOrganizacao() {
-        return notaOrganizacao;
+    public Integer getNotaHabilidadesTecnicas() {
+        return notaHabilidadesTecnicas;
     }
 
-    public void setNotaOrganizacao(Integer notaOrganizacao) {
-        this.notaOrganizacao = notaOrganizacao;
+    public void setNotaHabilidadesTecnicas(Integer notaHabilidadesTecnicas) {
+        this.notaHabilidadesTecnicas = notaHabilidadesTecnicas;
     }
 
-    public Integer getNotaParticipacao() {
-        return notaParticipacao;
+    public Integer getNotaHabilidadesComportamentais() {
+        return notaHabilidadesComportamentais;
     }
 
-    public void setNotaParticipacao(Integer notaParticipacao) {
-        this.notaParticipacao = notaParticipacao;
-    }
-
-    public Integer getNotaComportamento() {
-        return notaComportamento;
-    }
-
-    public void setNotaComportamento(Integer notaComportamento) {
-        this.notaComportamento = notaComportamento;
+    public void setNotaHabilidadesComportamentais(Integer notaHabilidadesComportamentais) {
+        this.notaHabilidadesComportamentais = notaHabilidadesComportamentais;
     }
 
     public LocalDate getDataAvaliacao() {

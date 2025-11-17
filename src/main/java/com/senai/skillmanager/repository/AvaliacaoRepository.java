@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
-    List<Avaliacao> findByEstagiarioId(Long estagiarioId);
+
+    List<Avaliacao> findByEstagiario_Id(Long estagiarioId);
+
 }

@@ -16,43 +16,44 @@ import java.util.List;
 @RequestMapping("/estagiarios")
 @CrossOrigin(origins = "*")
 public class EstagiarioController {
+
     private final EstagiarioService estagiarioService;
 
     public EstagiarioController(EstagiarioService estagiarioService) {
         this.estagiarioService = estagiarioService;
     }
 
+    @PostMapping
+    public ResponseEntity<EstagiarioResponseDTO> salvar(@Valid @RequestBody EstagiarioDTO dto) {
+        EstagiarioResponseDTO estagiarioSalvo = estagiarioService.salvar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(estagiarioSalvo);
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EstagiarioResponseDTO>> listarTodos() {
-        return ResponseEntity.ok(estagiarioService.listarTodos());
+        List<EstagiarioResponseDTO> estagiarios = estagiarioService.listarTodos();
+        return ResponseEntity.ok(estagiarios);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<EstagiarioResponseDTO> buscarPorId(@PathVariable Long id, Authentication authentication) {
-        return ResponseEntity.ok(estagiarioService.buscarPorId(id, authentication));
-    }
-
-    @PostMapping
-    public ResponseEntity<EstagiarioResponseDTO> salvar(@Valid @RequestBody EstagiarioDTO dto) {
-        EstagiarioResponseDTO estagiarioSalvo = estagiarioService.salvar(dto);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(estagiarioSalvo);
+        EstagiarioResponseDTO estagiario = estagiarioService.buscarPorId(id, authentication);
+        return ResponseEntity.ok(estagiario);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ESTAGIARIO', 'ADMIN')")
+    @PreAuthorize("hasRole('ESTAGIARIO')")
     public ResponseEntity<EstagiarioResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody EstagiarioDTO dto, Authentication authentication) {
         EstagiarioResponseDTO estagiarioAtualizado = estagiarioService.atualizar(id, dto, authentication);
         return ResponseEntity.ok(estagiarioAtualizado);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
-        estagiarioService.excluir(id);
+    @PreAuthorize("hasAnyRole('ESTAGIARIO', 'ADMIN')")
+    public ResponseEntity<Void> excluir(@PathVariable Long id, Authentication authentication) {
+        estagiarioService.excluir(id, authentication);
         return ResponseEntity.noContent().build();
     }
 }

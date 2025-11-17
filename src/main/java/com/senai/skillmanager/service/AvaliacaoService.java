@@ -3,17 +3,22 @@ package com.senai.skillmanager.service;
 import com.senai.skillmanager.dto.AvaliacaoDTO;
 import com.senai.skillmanager.dto.AvaliacaoResponseDTO;
 import com.senai.skillmanager.model.avaliacao.Avaliacao;
-import com.senai.skillmanager.model.estagiario.Estagiario;
 import com.senai.skillmanager.model.empresa.Supervisor;
+import com.senai.skillmanager.model.estagiario.Estagiario;
+import com.senai.skillmanager.model.faculdade.Coordenador;
 import com.senai.skillmanager.repository.AvaliacaoRepository;
+import com.senai.skillmanager.repository.CoordenadorRepository;
 import com.senai.skillmanager.repository.EstagiarioRepository;
 import com.senai.skillmanager.repository.SupervisorRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,38 +27,37 @@ public class AvaliacaoService {
     private final AvaliacaoRepository avaliacaoRepository;
     private final SupervisorRepository supervisorRepository;
     private final EstagiarioRepository estagiarioRepository;
+    private final CoordenadorRepository coordenadorRepository;
     private final SupervisorService supervisorService;
     private final EstagiarioService estagiarioService;
 
     public AvaliacaoService(AvaliacaoRepository avaliacaoRepository,
                             SupervisorRepository supervisorRepository,
                             EstagiarioRepository estagiarioRepository,
+                            CoordenadorRepository coordenadorRepository,
                             SupervisorService supervisorService,
                             EstagiarioService estagiarioService) {
         this.avaliacaoRepository = avaliacaoRepository;
         this.supervisorRepository = supervisorRepository;
         this.estagiarioRepository = estagiarioRepository;
+        this.coordenadorRepository = coordenadorRepository;
         this.supervisorService = supervisorService;
         this.estagiarioService = estagiarioService;
     }
 
     @Transactional
-    public AvaliacaoResponseDTO salvar(AvaliacaoDTO dto) {
-        Supervisor supervisor = supervisorRepository.findById(dto.getSupervisorId())
-                .orElseThrow(() -> new EntityNotFoundException("Supervisor não encontrado com ID: " + dto.getSupervisorId()));
+    public AvaliacaoResponseDTO salvar(AvaliacaoDTO dto, Authentication authentication) {
+        Supervisor supervisor = getSupervisorFromAuth(authentication);
+        Estagiario estagiario = getEstagiarioFromId(dto.getEstagiarioId());
 
-        Estagiario estagiario = estagiarioRepository.findById(dto.getEstagiarioId())
-                .orElseThrow(() -> new EntityNotFoundException("Estagiário não encontrado com ID: " + dto.getEstagiarioId()));
+        checkSupervisorEstagiarioEmpresa(supervisor, estagiario);
 
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setTitulo(dto.getTitulo());
-        avaliacao.setFeedbackPositivo(dto.getFeedbackPositivo());
-        avaliacao.setPontosDeMelhoria(dto.getPontosDeMelhoria());
-        avaliacao.setNotaFrequencia(dto.getNotaFrequencia());
+        avaliacao.setFeedback(dto.getFeedback());
         avaliacao.setNotaDesempenho(dto.getNotaDesempenho());
-        avaliacao.setNotaOrganizacao(dto.getNotaOrganizacao());
-        avaliacao.setNotaParticipacao(dto.getNotaParticipacao());
-        avaliacao.setNotaComportamento(dto.getNotaComportamento());
+        avaliacao.setNotaHabilidadesTecnicas(dto.getNotaHabilidadesTecnicas());
+        avaliacao.setNotaHabilidadesComportamentais(dto.getNotaHabilidadesComportamentais());
         avaliacao.setDataAvaliacao(LocalDate.now());
         avaliacao.setSupervisor(supervisor);
         avaliacao.setEstagiario(estagiario);
@@ -62,31 +66,139 @@ public class AvaliacaoService {
         return toResponseDTO(avaliacaoSalva);
     }
 
-    public List<AvaliacaoResponseDTO> listarPorEstagiario(Long estagiarioId) {
-        if (!estagiarioRepository.existsById(estagiarioId)) {
-            throw new EntityNotFoundException("Estagiário não encontrado com ID: " + estagiarioId);
-        }
-        return avaliacaoRepository.findByEstagiarioId(estagiarioId).stream()
+    public List<AvaliacaoResponseDTO> listarTodos() {
+        return avaliacaoRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    private AvaliacaoResponseDTO toResponseDTO(Avaliacao avaliacao) {
+    public List<AvaliacaoResponseDTO> listarPorEstagiario(Long estagiarioId, Authentication authentication) {
+        Estagiario estagiario = getEstagiarioFromId(estagiarioId);
+
+        checkOwnership(null, estagiario, authentication);
+
+        List<Avaliacao> avaliacoes = avaliacaoRepository.findByEstagiario_Id(estagiarioId);
+        return avaliacoes.stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public AvaliacaoResponseDTO buscarPorId(Long id, Authentication authentication) {
+        Avaliacao avaliacao = buscarEntidadePorId(id);
+        checkOwnership(avaliacao, avaliacao.getEstagiario(), authentication);
+        return toResponseDTO(avaliacao);
+    }
+
+    @Transactional
+    public AvaliacaoResponseDTO atualizar(Long id, AvaliacaoDTO dto, Authentication authentication) {
+        Supervisor supervisor = getSupervisorFromAuth(authentication);
+        Estagiario estagiario = getEstagiarioFromId(dto.getEstagiarioId());
+        Avaliacao avaliacao = buscarEntidadePorId(id);
+
+        checkOwnership(avaliacao, estagiario, authentication);
+
+        if (!Objects.equals(avaliacao.getSupervisor().getId(), supervisor.getId())) {
+            throw new SecurityException("Acesso negado: Somente o supervisor que criou a avaliação pode atualizá-la.");
+        }
+        checkSupervisorEstagiarioEmpresa(supervisor, estagiario);
+
+        avaliacao.setTitulo(dto.getTitulo());
+        avaliacao.setFeedback(dto.getFeedback());
+        avaliacao.setNotaDesempenho(dto.getNotaDesempenho());
+        avaliacao.setNotaHabilidadesTecnicas(dto.getNotaHabilidadesTecnicas());
+        avaliacao.setNotaHabilidadesComportamentais(dto.getNotaHabilidadesComportamentais());
+        avaliacao.setEstagiario(estagiario);
+
+        Avaliacao avaliacaoAtualizada = avaliacaoRepository.save(avaliacao);
+        return toResponseDTO(avaliacaoAtualizada);
+    }
+
+    @Transactional
+    public void excluir(Long id, Authentication authentication) {
+        Avaliacao avaliacao = buscarEntidadePorId(id);
+        checkOwnership(avaliacao, avaliacao.getEstagiario(), authentication);
+
+        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            Supervisor supervisor = getSupervisorFromAuth(authentication);
+            if (!Objects.equals(avaliacao.getSupervisor().getId(), supervisor.getId())) {
+                throw new SecurityException("Acesso negado: Somente o supervisor que criou a avaliação ou um Admin pode excluí-la.");
+            }
+        }
+
+        avaliacaoRepository.delete(avaliacao);
+    }
+
+    private Supervisor getSupervisorFromAuth(Authentication authentication) {
+        String supervisorEmail = authentication.getName();
+        return supervisorRepository.findByEmail(supervisorEmail)
+                .orElseThrow(() -> new EntityNotFoundException("Supervisor não encontrado com email: " + supervisorEmail));
+    }
+
+    private Estagiario getEstagiarioFromId(Long estagiarioId) {
+        return estagiarioRepository.findById(estagiarioId)
+                .orElseThrow(() -> new EntityNotFoundException("Estagiário não encontrado com ID: " + estagiarioId));
+    }
+
+    private Avaliacao buscarEntidadePorId(Long id) {
+        return avaliacaoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Avaliação não encontrada com ID: " + id));
+    }
+
+    private void checkSupervisorEstagiarioEmpresa(Supervisor supervisor, Estagiario estagiario) {
+        if (!Objects.equals(estagiario.getEmpresa().getId(), supervisor.getEmpresa().getId())) {
+            throw new SecurityException("Acesso negado: O estagiário não pertence à empresa deste supervisor.");
+        }
+    }
+
+    private void checkOwnership(Avaliacao avaliacao, Estagiario estagiario, Authentication authentication) {
+        String authEmail = authentication.getName();
+
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return;
+        }
+
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ESTAGIARIO"))) {
+            if (estagiario.getEmail().equals(authEmail)) {
+                return;
+            }
+        }
+
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUPERVISOR")) ||
+                authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GERENTE"))) {
+
+            if (avaliacao != null && avaliacao.getSupervisor().getEmail().equals(authEmail)) {
+                return;
+            }
+
+            Supervisor supervisor = getSupervisorFromAuth(authentication);
+            if (Objects.equals(supervisor.getEmpresa().getId(), estagiario.getEmpresa().getId())) {
+                return;
+            }
+        }
+
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_FACULDADE"))) {
+            Coordenador coordenador = coordenadorRepository.findByEmail(authEmail)
+                    .orElseThrow(() -> new EntityNotFoundException("Coordenador não encontrado."));
+
+            if (Objects.equals(coordenador.getFaculdade().getId(), estagiario.getDadosAcademicos().getFaculdade().getId())) {
+                return;
+            }
+        }
+
+        throw new SecurityException("Acesso negado. Você não tem permissão para acessar este recurso.");
+    }
+
+    private AvaliacaoResponseDTO toResponseDTO(Avaliacao entity) {
         AvaliacaoResponseDTO dto = new AvaliacaoResponseDTO();
-        dto.setId(avaliacao.getId());
-        dto.setTitulo(avaliacao.getTitulo());
-        dto.setFeedbackPositivo(avaliacao.getFeedbackPositivo());
-        dto.setPontosDeMelhoria(avaliacao.getPontosDeMelhoria());
-        dto.setNotaFrequencia(avaliacao.getNotaFrequencia());
-        dto.setNotaDesempenho(avaliacao.getNotaDesempenho());
-        dto.setNotaOrganizacao(avaliacao.getNotaOrganizacao());
-        dto.setNotaParticipacao(avaliacao.getNotaParticipacao());
-        dto.setNotaComportamento(avaliacao.getNotaComportamento());
-        dto.setDataAvaliacao(avaliacao.getDataAvaliacao());
-
-        dto.setSupervisor(supervisorService.toResponseDTO(avaliacao.getSupervisor()));
-        dto.setEstagiario(estagiarioService.toResponseDTO(avaliacao.getEstagiario()));
-
+        dto.setId(entity.getId());
+        dto.setTitulo(entity.getTitulo());
+        dto.setFeedback(entity.getFeedback());
+        dto.setNotaDesempenho(entity.getNotaDesempenho());
+        dto.setNotaHabilidadesTecnicas(entity.getNotaHabilidadesTecnicas());
+        dto.setNotaHabilidadesComportamentais(entity.getNotaHabilidadesComportamentais());
+        dto.setDataAvaliacao(entity.getDataAvaliacao());
+        dto.setSupervisor(supervisorService.toResponseDTO(entity.getSupervisor()));
+        dto.setEstagiario(estagiarioService.toResponseDTO(entity.getEstagiario()));
         return dto;
     }
 }

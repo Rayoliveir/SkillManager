@@ -1,21 +1,27 @@
 package com.senai.skillmanager.service;
 
 import com.senai.skillmanager.dto.*;
-import com.senai.skillmanager.model.empresa.Empresa;
 import com.senai.skillmanager.model.Endereco;
+import com.senai.skillmanager.model.empresa.Empresa;
 import com.senai.skillmanager.model.estagiario.DadosAcademicos;
 import com.senai.skillmanager.model.estagiario.Estagiario;
+import com.senai.skillmanager.model.faculdade.Coordenador;
 import com.senai.skillmanager.model.faculdade.Faculdade;
+import com.senai.skillmanager.repository.CoordenadorRepository;
 import com.senai.skillmanager.repository.EmpresaRepository;
 import com.senai.skillmanager.repository.EstagiarioRepository;
 import com.senai.skillmanager.repository.FaculdadeRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,140 +30,153 @@ public class EstagiarioService {
     private final EstagiarioRepository estagiarioRepository;
     private final FaculdadeRepository faculdadeRepository;
     private final EmpresaRepository empresaRepository;
+    private final CoordenadorRepository coordenadorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DadosAcademicosService dadosAcademicosService;
+    private final EnderecoService enderecoService;
 
-    public EstagiarioService(EstagiarioRepository estagiarioRepository, FaculdadeRepository faculdadeRepository, EmpresaRepository empresaRepository, PasswordEncoder passwordEncoder) {
+    public EstagiarioService(EstagiarioRepository estagiarioRepository,
+                             FaculdadeRepository faculdadeRepository,
+                             EmpresaRepository empresaRepository,
+                             CoordenadorRepository coordenadorRepository,
+                             PasswordEncoder passwordEncoder,
+                             @Lazy DadosAcademicosService dadosAcademicosService,
+                             EnderecoService enderecoService) {
         this.estagiarioRepository = estagiarioRepository;
         this.faculdadeRepository = faculdadeRepository;
         this.empresaRepository = empresaRepository;
+        this.coordenadorRepository = coordenadorRepository;
         this.passwordEncoder = passwordEncoder;
+        this.dadosAcademicosService = dadosAcademicosService;
+        this.enderecoService = enderecoService;
     }
 
+
     @Transactional
-    public EstagiarioResponseDTO salvar(EstagiarioDTO estagiarioDTO) {
-        estagiarioRepository.findByCpf(estagiarioDTO.getCpf()).ifPresent(unused -> {
+    public EstagiarioResponseDTO salvar(EstagiarioDTO dto) {
+        if (estagiarioRepository.findByCpf(dto.getCpf()).isPresent()) {
             throw new RuntimeException("CPF já cadastrado.");
-        });
-        estagiarioRepository.findByEmail(estagiarioDTO.getEmail()).ifPresent(unused -> {
+        }
+        if (estagiarioRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado.");
-        });
+        }
 
-        Empresa empresa = empresaRepository.findByCodigoEmpresa(estagiarioDTO.getCodigoEmpresa())
-                .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrada com o código: " + estagiarioDTO.getCodigoEmpresa()));
+        Empresa empresa = empresaRepository.findByCodigoEmpresa(dto.getCodigoEmpresa())
+                .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrada com o código: " + dto.getCodigoEmpresa()));
 
-        DadosAcademicosDTO dadosAcademicosDTO = estagiarioDTO.getDadosAcademicos();
-        Faculdade faculdade = faculdadeRepository.findByCnpj(dadosAcademicosDTO.getFaculdadeCnpj())
-                .orElseThrow(() -> new EntityNotFoundException("Faculdade não encontrada com CNPJ: " + dadosAcademicosDTO.getFaculdadeCnpj()));
+        Faculdade faculdade = faculdadeRepository.findByCnpj(dto.getDadosAcademicos().getFaculdadeCnpj())
+                .orElseThrow(() -> new EntityNotFoundException("Faculdade não encontrada com CNPJ: " + dto.getDadosAcademicos().getFaculdadeCnpj()));
+
+        Estagiario estagiario = new Estagiario();
+        estagiario.setNome(dto.getNome());
+        estagiario.setDataNascimento(dto.getDataNascimento());
+        estagiario.setGenero(dto.getGenero());
+        estagiario.setTelefone(dto.getTelefone());
+        estagiario.setEmail(dto.getEmail());
+        estagiario.setCpf(dto.getCpf());
+        estagiario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        estagiario.setEmpresa(empresa);
 
         DadosAcademicos dadosAcademicos = new DadosAcademicos();
         dadosAcademicos.setFaculdade(faculdade);
-        dadosAcademicos.setCurso(dadosAcademicosDTO.getCurso());
-        dadosAcademicos.setPeriodoSemestre(dadosAcademicosDTO.getPeriodoSemestre());
-        dadosAcademicos.setPrevisaoFormatura(dadosAcademicosDTO.getPrevisaoFormatura());
-        dadosAcademicos.setRa(dadosAcademicosDTO.getRa());
-
-        EnderecoDTO enderecoDTO = estagiarioDTO.getEndereco();
-        Endereco endereco = new Endereco();
-        endereco.setLogradouro(enderecoDTO.getLogradouro());
-        endereco.setBairro(enderecoDTO.getBairro());
-        endereco.setCidade(enderecoDTO.getCidade());
-        endereco.setNumero(enderecoDTO.getNumero());
-        endereco.setEstados(enderecoDTO.getEstados());
-        endereco.setCep(enderecoDTO.getCep());
-
-        Estagiario estagiario = new Estagiario();
-        estagiario.setNome(estagiarioDTO.getNome());
-        estagiario.setDataNascimento(estagiarioDTO.getDataNascimento());
-        estagiario.setGenero(estagiarioDTO.getGenero());
-        estagiario.setTelefone(estagiarioDTO.getTelefone());
-        estagiario.setEmail(estagiarioDTO.getEmail());
-        estagiario.setCpf(estagiarioDTO.getCpf());
-        estagiario.setSenha(passwordEncoder.encode(estagiarioDTO.getSenha()));
-        estagiario.setEndereco(endereco);
+        dadosAcademicos.setCurso(dto.getDadosAcademicos().getCurso());
+        dadosAcademicos.setPeriodoSemestre(dto.getDadosAcademicos().getPeriodoSemestre());
+        dadosAcademicos.setPrevisaoFormatura(YearMonth.parse(dto.getDadosAcademicos().getPrevisaoFormatura()));
+        dadosAcademicos.setRa(dto.getDadosAcademicos().getRa());
         estagiario.setDadosAcademicos(dadosAcademicos);
-        estagiario.setEmpresa(empresa);
+
+        Endereco endereco = new Endereco();
+        endereco.setLogradouro(dto.getEndereco().getLogradouro());
+        endereco.setBairro(dto.getEndereco().getBairro());
+        endereco.setCidade(dto.getEndereco().getCidade());
+        endereco.setNumero(dto.getEndereco().getNumero());
+        endereco.setEstados(dto.getEndereco().getEstados());
+        endereco.setCep(dto.getEndereco().getCep());
+        estagiario.setEndereco(endereco);
 
         Estagiario estagiarioSalvo = estagiarioRepository.save(estagiario);
         return toResponseDTO(estagiarioSalvo);
     }
 
-    @Transactional
-    public EstagiarioResponseDTO atualizar(Long id, EstagiarioDTO estagiarioDTO, Authentication authentication) {
-        Estagiario estagiarioExistente = estagiarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Estagiário não encontrado com ID: " + id));
-
-        checkOwnership(estagiarioExistente, authentication, true);
-
-        estagiarioExistente.setNome(estagiarioDTO.getNome());
-        estagiarioExistente.setDataNascimento(estagiarioDTO.getDataNascimento());
-        estagiarioExistente.setGenero(estagiarioDTO.getGenero());
-        estagiarioExistente.setTelefone(estagiarioDTO.getTelefone());
-
-        if (estagiarioDTO.getSenha() != null && !estagiarioDTO.getSenha().isEmpty()) {
-            estagiarioExistente.setSenha(passwordEncoder.encode(estagiarioDTO.getSenha()));
-        }
-
-        if (estagiarioDTO.getEndereco() != null) {
-            EnderecoDTO enderecoDTO = estagiarioDTO.getEndereco();
-            Endereco endereco = estagiarioExistente.getEndereco() != null ? estagiarioExistente.getEndereco() : new Endereco();
-            endereco.setLogradouro(enderecoDTO.getLogradouro());
-            endereco.setBairro(enderecoDTO.getBairro());
-            endereco.setCidade(enderecoDTO.getCidade());
-            endereco.setNumero(enderecoDTO.getNumero());
-            endereco.setEstados(enderecoDTO.getEstados());
-            endereco.setCep(enderecoDTO.getCep());
-            estagiarioExistente.setEndereco(endereco);
-        }
-
-        Estagiario estagiarioAtualizado = estagiarioRepository.save(estagiarioExistente);
-        return toResponseDTO(estagiarioAtualizado);
-    }
-
-    public void excluir(Long id) {
-        if (!estagiarioRepository.existsById(id)) {
-            throw new EntityNotFoundException("Estagiário não encontrado com ID: " + id);
-        }
-        estagiarioRepository.deleteById(id);
-    }
-
     public List<EstagiarioResponseDTO> listarTodos() {
-        return estagiarioRepository.findAll().stream().map(this::toResponseDTO).collect(Collectors.toList());
+        return estagiarioRepository.findAll().stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     public EstagiarioResponseDTO buscarPorId(Long id, Authentication authentication) {
-        Estagiario estagiario = estagiarioRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Estagiário não encontrado com ID: " + id));
-
-        checkOwnership(estagiario, authentication, false);
-
+        Estagiario estagiario = buscarEntidadePorId(id);
+        checkOwnership(estagiario, authentication);
         return toResponseDTO(estagiario);
     }
 
-    private void checkOwnership(Estagiario estagiario, Authentication authentication, boolean isUpdate) {
+    public Estagiario buscarEntidadePorId(Long id) {
+        return estagiarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Estagiário não encontrado com ID: " + id));
+    }
+
+    @Transactional
+    public EstagiarioResponseDTO atualizar(Long id, EstagiarioDTO dto, Authentication authentication) {
+        Estagiario estagiario = buscarEntidadePorId(id);
+        checkOwnership(estagiario, authentication);
+
+        estagiario.setNome(dto.getNome());
+        estagiario.setDataNascimento(dto.getDataNascimento());
+        estagiario.setGenero(dto.getGenero());
+        estagiario.setTelefone(dto.getTelefone());
+
+        if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
+            estagiario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        }
+
+        if (dto.getEndereco() != null) {
+            Endereco endereco = estagiario.getEndereco();
+            endereco.setLogradouro(dto.getEndereco().getLogradouro());
+            endereco.setBairro(dto.getEndereco().getBairro());
+            endereco.setCidade(dto.getEndereco().getCidade());
+            endereco.setNumero(dto.getEndereco().getNumero());
+            endereco.setEstados(dto.getEndereco().getEstados());
+            endereco.setCep(dto.getEndereco().getCep());
+        }
+
+        Estagiario estagiarioAtualizado = estagiarioRepository.save(estagiario);
+        return toResponseDTO(estagiarioAtualizado);
+    }
+
+    @Transactional
+    public void excluir(Long id, Authentication authentication) {
+        Estagiario estagiario = buscarEntidadePorId(id);
+        checkOwnership(estagiario, authentication);
+        estagiarioRepository.delete(estagiario);
+    }
+
+    private void checkOwnership(Estagiario estagiario, Authentication authentication) {
         String authEmail = authentication.getName();
 
-        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        if (isAdmin) return;
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return;
+        }
 
-        boolean isEstagiario = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ESTAGIARIO"));
-
-        if (isEstagiario) {
-            if (!estagiario.getEmail().equals(authEmail)) {
-                throw new SecurityException("Acesso negado. Você não tem permissão para acessar este recurso.");
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ESTAGIARIO"))) {
+            if (estagiario.getEmail().equals(authEmail)) {
+                return;
             }
-            return;
         }
 
-        if (isUpdate) {
-            throw new SecurityException("Acesso negado. Apenas o próprio estagiário ou um ADMIN pode atualizar este recurso.");
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUPERVISOR")) ||
+                authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GERENTE"))) {
+            if (Objects.equals(estagiario.getEmpresa().getId(), estagiario.getEmpresa().getId())) {
+                return;
+            }
         }
 
-        boolean isSupervisorOuGerente = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUPERVISOR")) ||
-                authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GERENTE"));
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_FACULDADE"))) {
+            Coordenador coordenador = coordenadorRepository.findByEmail(authEmail)
+                    .orElseThrow(() -> new EntityNotFoundException("Coordenador não encontrado."));
 
-        boolean isFaculdade = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_FACULDADE"));
-
-        if (isSupervisorOuGerente || isFaculdade) {
-            return;
+            if (Objects.equals(coordenador.getFaculdade().getId(), estagiario.getDadosAcademicos().getFaculdade().getId())) {
+                return;
+            }
         }
 
         throw new SecurityException("Acesso negado. Você não tem permissão para acessar este recurso.");
@@ -165,6 +184,7 @@ public class EstagiarioService {
 
     public EstagiarioResponseDTO toResponseDTO(Estagiario estagiario) {
         if (estagiario == null) return null;
+
         EstagiarioResponseDTO dto = new EstagiarioResponseDTO();
         dto.setId(estagiario.getId());
         dto.setNome(estagiario.getNome());
@@ -173,59 +193,48 @@ public class EstagiarioService {
         dto.setTelefone(estagiario.getTelefone());
         dto.setEmail(estagiario.getEmail());
         dto.setCpf(estagiario.getCpf());
-        if (estagiario.getEndereco() != null) {
-            dto.setEndereco(toEnderecoResponseDTO(estagiario.getEndereco()));
+
+        if (estagiario.getEmpresa() != null) {
+            EmpresaResponseDTO empresaDTO = new EmpresaResponseDTO();
+            empresaDTO.setId(estagiario.getEmpresa().getId());
+            empresaDTO.setNome(estagiario.getEmpresa().getNome());
+            empresaDTO.setCnpj(estagiario.getEmpresa().getCnpj());
+            empresaDTO.setCodigoEmpresa(estagiario.getEmpresa().getCodigoEmpresa());
+            dto.setEmpresa(empresaDTO);
         }
+
+        if (estagiario.getEndereco() != null) {
+            dto.setEndereco(toEnderecoDTO(estagiario.getEndereco()));
+        }
+
         if (estagiario.getDadosAcademicos() != null) {
             dto.setDadosAcademicos(toDadosAcademicosResponseDTO(estagiario.getDadosAcademicos()));
         }
+
         return dto;
     }
 
-    public EnderecoResponseDTO toEnderecoResponseDTO(Endereco endereco) {
-        if (endereco == null) return null;
-        EnderecoResponseDTO dto = new EnderecoResponseDTO();
-        dto.setId(endereco.getId());
-        dto.setLogradouro(endereco.getLogradouro());
-        dto.setBairro(endereco.getBairro());
-        dto.setCidade(endereco.getCidade());
-        dto.setNumero(endereco.getNumero());
-        dto.setEstados(endereco.getEstados());
-        dto.setCep(endereco.getCep());
-        return dto;
-    }
-
-    public DadosAcademicosResponseDTO toDadosAcademicosResponseDTO(DadosAcademicos dados) {
+    private DadosAcademicosResponseDTO toDadosAcademicosResponseDTO(DadosAcademicos dados) {
         if (dados == null) return null;
 
         DadosAcademicosResponseDTO dto = new DadosAcademicosResponseDTO();
         dto.setId(dados.getId());
-        dto.setFaculdade(toFaculdadeResponseDTO(dados.getFaculdade()));
         dto.setCurso(dados.getCurso());
         dto.setPeriodoSemestre(dados.getPeriodoSemestre());
-        dto.setPrevisaoFormatura(dados.getPrevisaoFormatura());
+        dto.setPrevisaoFormatura(dados.getPrevisaoFormatura().toString());
         dto.setRa(dados.getRa());
+
+        if (dados.getFaculdade() != null) {
+            FaculdadeResponseDTO faculdadeDTO = new FaculdadeResponseDTO();
+            faculdadeDTO.setId(dados.getFaculdade().getId());
+            faculdadeDTO.setNome(dados.getFaculdade().getNome());
+            faculdadeDTO.setCnpj(dados.getFaculdade().getCnpj());
+            dto.setFaculdade(faculdadeDTO);
+        }
         return dto;
     }
 
-    public FaculdadeResponseDTO toFaculdadeResponseDTO(Faculdade faculdade) {
-        if (faculdade == null) return null;
-
-        FaculdadeResponseDTO response = new FaculdadeResponseDTO();
-        response.setId(faculdade.getId());
-        response.setNome(faculdade.getNome());
-        response.setCnpj(faculdade.getCnpj());
-        response.setTelefone(faculdade.getTelefone());
-        response.setSite(faculdade.getSite());
-
-        if (faculdade.getEndereco() != null) {
-            response.setEndereco(toEnderecoDTO(faculdade.getEndereco()));
-        }
-
-        return response;
-    }
-
-    public EnderecoDTO toEnderecoDTO(Endereco endereco) {
+    private EnderecoDTO toEnderecoDTO(Endereco endereco) {
         if (endereco == null) return null;
 
         EnderecoDTO dto = new EnderecoDTO();
