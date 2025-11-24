@@ -63,10 +63,19 @@ public class SecurityService implements UserDetailsService {
             Supervisor supervisor = supervisorOpt.get();
 
             List<GrantedAuthority> authorities = new ArrayList<>();
+
+            // --- LÓGICA CORRIGIDA E MAIS SEGURA ---
             if (supervisor.getCargo() == Cargo.GERENTE) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_GERENTE"));
-            } else {
+            } else if (supervisor.getCargo() == Cargo.SUPERVISOR) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_SUPERVISOR"));
+            }
+            // Se o Cargo não for nenhum destes (ex: futuro RH), a lista de 'authorities' ficará vazia.
+            // O Spring Security irá negar o acesso por defeito, o que é seguro.
+
+            // Se a lista estiver vazia, significa que o cargo não tem permissão no sistema.
+            if (authorities.isEmpty()) {
+                throw new UsernameNotFoundException("O usuário '" + email + "' não possui um cargo com permissão de acesso.");
             }
 
             return new User(supervisor.getEmail(), supervisor.getSenha(), authorities);

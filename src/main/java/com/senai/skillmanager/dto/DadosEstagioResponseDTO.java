@@ -1,9 +1,11 @@
 package com.senai.skillmanager.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.senai.skillmanager.model.estagiario.TipoEstagio;
 
 import java.time.LocalDate;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DadosEstagioResponseDTO {
 
     private Long id;

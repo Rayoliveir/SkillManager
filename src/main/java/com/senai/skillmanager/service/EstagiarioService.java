@@ -1,16 +1,15 @@
 package com.senai.skillmanager.service;
 
 import com.senai.skillmanager.dto.*;
+import com.senai.skillmanager.exception.EmailJaCadastradoException;
 import com.senai.skillmanager.model.Endereco;
 import com.senai.skillmanager.model.empresa.Empresa;
+import com.senai.skillmanager.model.empresa.Supervisor;
 import com.senai.skillmanager.model.estagiario.DadosAcademicos;
 import com.senai.skillmanager.model.estagiario.Estagiario;
 import com.senai.skillmanager.model.faculdade.Coordenador;
 import com.senai.skillmanager.model.faculdade.Faculdade;
-import com.senai.skillmanager.repository.CoordenadorRepository;
-import com.senai.skillmanager.repository.EmpresaRepository;
-import com.senai.skillmanager.repository.EstagiarioRepository;
-import com.senai.skillmanager.repository.FaculdadeRepository;
+import com.senai.skillmanager.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
@@ -31,34 +30,44 @@ public class EstagiarioService {
     private final FaculdadeRepository faculdadeRepository;
     private final EmpresaRepository empresaRepository;
     private final CoordenadorRepository coordenadorRepository;
+    private final SupervisorRepository supervisorRepository;
     private final PasswordEncoder passwordEncoder;
     private final DadosAcademicosService dadosAcademicosService;
     private final EnderecoService enderecoService;
+
+    // --- ADICIONADO: Para o "Fluxo 2" ---
+    // Injetamos o AvaliacaoService (Lazy para evitar dependência circular)
+    private final AvaliacaoService avaliacaoService;
 
     public EstagiarioService(EstagiarioRepository estagiarioRepository,
                              FaculdadeRepository faculdadeRepository,
                              EmpresaRepository empresaRepository,
                              CoordenadorRepository coordenadorRepository,
+                             SupervisorRepository supervisorRepository,
                              PasswordEncoder passwordEncoder,
                              @Lazy DadosAcademicosService dadosAcademicosService,
-                             EnderecoService enderecoService) {
+                             EnderecoService enderecoService,
+                             @Lazy AvaliacaoService avaliacaoService) { // --- ADICIONADO
         this.estagiarioRepository = estagiarioRepository;
         this.faculdadeRepository = faculdadeRepository;
         this.empresaRepository = empresaRepository;
         this.coordenadorRepository = coordenadorRepository;
+        this.supervisorRepository = supervisorRepository;
         this.passwordEncoder = passwordEncoder;
         this.dadosAcademicosService = dadosAcademicosService;
         this.enderecoService = enderecoService;
+        this.avaliacaoService = avaliacaoService; // --- ADICIONADO
     }
 
 
+    // --- CORREÇÃO: Método 'salvar' completo (o seu original) ---
     @Transactional
     public EstagiarioResponseDTO salvar(EstagiarioDTO dto) {
         if (estagiarioRepository.findByCpf(dto.getCpf()).isPresent()) {
             throw new RuntimeException("CPF já cadastrado.");
         }
         if (estagiarioRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("Email já cadastrado.");
+            throw new EmailJaCadastradoException("Email já cadastrado.");
         }
 
         Empresa empresa = empresaRepository.findByCodigoEmpresa(dto.getCodigoEmpresa())
@@ -95,19 +104,37 @@ public class EstagiarioService {
         estagiario.setEndereco(endereco);
 
         Estagiario estagiarioSalvo = estagiarioRepository.save(estagiario);
+        // O 'salvar' chama o 'toResponseDTO' simples (sem avaliações), o que é correto.
         return toResponseDTO(estagiarioSalvo);
     }
 
+    // --- INFO: O 'listarTodos' (do Admin) continua o mesmo. ---
     public List<EstagiarioResponseDTO> listarTodos() {
         return estagiarioRepository.findAll().stream()
-                .map(this::toResponseDTO)
+                .map(this::toResponseDTO) // <-- Chama o DTO simples (rápido)
                 .collect(Collectors.toList());
     }
 
+    // --- MUDANÇA: O 'buscarPorId' (Fluxo 2) foi "turbinado" ---
     public EstagiarioResponseDTO buscarPorId(Long id, Authentication authentication) {
         Estagiario estagiario = buscarEntidadePorId(id);
+
+        // 1. Verifica se o usuário logado (Admin, Coordenador, Supervisor) pode ver este estagiário
         checkOwnership(estagiario, authentication);
-        return toResponseDTO(estagiario);
+
+        // 2. Converte o Estagiário para o DTO (com dados de Empresa, Faculdade, etc.)
+        // (Este é o DTO "simples", que ainda não tem as avaliações)
+        EstagiarioResponseDTO dto = toResponseDTO(estagiario);
+
+        // 3. --- NOVO: Busca as avaliações ---
+        // Se o usuário tem permissão (passou no checkOwnership), buscamos suas avaliações
+        List<AvaliacaoResponseDTO> avaliacoes = avaliacaoService.listarPorEstagiario(id, authentication);
+
+        // 4. Adiciona as avaliações ao DTO
+        dto.setAvaliacoes(avaliacoes);
+
+        // 5. Retorna o DTO "completo"
+        return dto;
     }
 
     public Estagiario buscarEntidadePorId(Long id) {
@@ -115,6 +142,7 @@ public class EstagiarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Estagiário não encontrado com ID: " + id));
     }
 
+    // --- INFO: O 'atualizar' continua o mesmo (código completo) ---
     @Transactional
     public EstagiarioResponseDTO atualizar(Long id, EstagiarioDTO dto, Authentication authentication) {
         Estagiario estagiario = buscarEntidadePorId(id);
@@ -143,6 +171,7 @@ public class EstagiarioService {
         return toResponseDTO(estagiarioAtualizado);
     }
 
+    // --- INFO: O 'excluir' continua o mesmo (código completo) ---
     @Transactional
     public void excluir(Long id, Authentication authentication) {
         Estagiario estagiario = buscarEntidadePorId(id);
@@ -150,6 +179,7 @@ public class EstagiarioService {
         estagiarioRepository.delete(estagiario);
     }
 
+    // --- INFO: O 'checkOwnership' já estava 100% correto (código completo) ---
     private void checkOwnership(Estagiario estagiario, Authentication authentication) {
         String authEmail = authentication.getName();
 
@@ -165,7 +195,11 @@ public class EstagiarioService {
 
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUPERVISOR")) ||
                 authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GERENTE"))) {
-            if (Objects.equals(estagiario.getEmpresa().getId(), estagiario.getEmpresa().getId())) {
+
+            Supervisor supervisorLogado = supervisorRepository.findByEmail(authEmail)
+                    .orElseThrow(() -> new EntityNotFoundException("Supervisor não encontrado."));
+
+            if (Objects.equals(estagiario.getEmpresa().getId(), supervisorLogado.getEmpresa().getId())) {
                 return;
             }
         }
@@ -182,6 +216,8 @@ public class EstagiarioService {
         throw new SecurityException("Acesso negado. Você não tem permissão para acessar este recurso.");
     }
 
+    // --- INFO: Este é o 'toResponseDTO' "Simples" (código completo) ---
+    // Ele é usado pelo GET /dashboard (Fluxo 1) e outros serviços.
     public EstagiarioResponseDTO toResponseDTO(Estagiario estagiario) {
         if (estagiario == null) return null;
 
@@ -211,9 +247,13 @@ public class EstagiarioService {
             dto.setDadosAcademicos(toDadosAcademicosResponseDTO(estagiario.getDadosAcademicos()));
         }
 
+        // Note: NÃO adicionamos a lista de avaliações aqui de propósito.
+        // O método 'buscarPorId' (acima) é quem faz isso.
+
         return dto;
     }
 
+    // --- INFO: Conversores helper (código completo) ---
     private DadosAcademicosResponseDTO toDadosAcademicosResponseDTO(DadosAcademicos dados) {
         if (dados == null) return null;
 

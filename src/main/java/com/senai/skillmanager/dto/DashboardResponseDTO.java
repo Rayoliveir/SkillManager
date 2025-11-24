@@ -7,50 +7,23 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DashboardResponseDTO {
 
-    private String nomeUsuario;
-    private String descricaoPrincipal;
+    // --- MUDANÇA: Campos antigos removidos ---
+    // O front-end espera estes dados DENTRO dos DTOs aninhados
+    // private String nomeUsuario;
+    // private String descricaoPrincipal;
+    // private Integer totalEstagiarios;
+    // private List<String> listaNomesEstagiarios;
+    // private List<AvaliacaoResponseDTO> avaliacoesRecentes;
 
-    // Campos para Supervisor/Coordenador
-    private Integer totalEstagiarios;
-    private List<String> listaNomesEstagiarios;
-
-    // Campos para Estagiário (usando o seu DTO)
+    // --- INFO: O DTO do Estagiário já estava correto ---
     private DashboardEstagiarioDTO dashboardEstagiario;
 
-    // Campo antigo (que vamos deixar de usar para o estagiário)
-    private List<AvaliacaoResponseDTO> avaliacoesRecentes;
+    // --- NOVO: DTOs aninhados para Supervisor e Coordenador ---
+    // Estes DTOs corrigem o bug "Nenhum dado encontrado."
+    private DashboardSupervisorResponseDTO dashboardSupervisor;
+    private DashboardCoordenadorResponseDTO dashboardCoordenador;
 
-    public String getNomeUsuario() {
-        return nomeUsuario;
-    }
-
-    public void setNomeUsuario(String nomeUsuario) {
-        this.nomeUsuario = nomeUsuario;
-    }
-
-    public String getDescricaoPrincipal() {
-        return descricaoPrincipal;
-    }
-
-    public void setDescricaoPrincipal(String descricaoPrincipal) {
-        this.descricaoPrincipal = descricaoPrincipal;
-    }
-
-    public Integer getTotalEstagiarios() {
-        return totalEstagiarios;
-    }
-
-    public void setTotalEstagiarios(Integer totalEstagiarios) {
-        this.totalEstagiarios = totalEstagiarios;
-    }
-
-    public List<String> getListaNomesEstagiarios() {
-        return listaNomesEstagiarios;
-    }
-
-    public void setListaNomesEstagiarios(List<String> listaNomesEstagiarios) {
-        this.listaNomesEstagiarios = listaNomesEstagiarios;
-    }
+    // Getters e Setters
 
     public DashboardEstagiarioDTO getDashboardEstagiario() {
         return dashboardEstagiario;
@@ -60,11 +33,19 @@ public class DashboardResponseDTO {
         this.dashboardEstagiario = dashboardEstagiario;
     }
 
-    public List<AvaliacaoResponseDTO> getAvaliacoesRecentes() {
-        return avaliacoesRecentes;
+    public DashboardSupervisorResponseDTO getDashboardSupervisor() {
+        return dashboardSupervisor;
     }
 
-    public void setAvaliacoesRecentes(List<AvaliacaoResponseDTO> avaliacoesRecentes) {
-        this.avaliacoesRecentes = avaliacoesRecentes;
+    public void setDashboardSupervisor(DashboardSupervisorResponseDTO dashboardSupervisor) {
+        this.dashboardSupervisor = dashboardSupervisor;
+    }
+
+    public DashboardCoordenadorResponseDTO getDashboardCoordenador() {
+        return dashboardCoordenador;
+    }
+
+    public void setDashboardCoordenador(DashboardCoordenadorResponseDTO dashboardCoordenador) {
+        this.dashboardCoordenador = dashboardCoordenador;
     }
 }

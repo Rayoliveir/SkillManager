@@ -1,7 +1,9 @@
 package com.senai.skillmanager.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDate;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AvaliacaoResponseDTO {
 
     private Long id;

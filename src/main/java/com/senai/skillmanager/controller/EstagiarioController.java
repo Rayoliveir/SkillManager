@@ -50,9 +50,11 @@ public class EstagiarioController {
         return ResponseEntity.ok(estagiarioAtualizado);
     }
 
+    // --- CORREÇÃO DE SEGURANÇA: Estagiário NÃO pode excluir. Apenas Admin e Gestores. ---
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ESTAGIARIO', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR', 'GERENTE')")
     public ResponseEntity<Void> excluir(@PathVariable Long id, Authentication authentication) {
+        // O Service já garante que o Supervisor só pode excluir estagiários da SUA empresa.
         estagiarioService.excluir(id, authentication);
         return ResponseEntity.noContent().build();
     }

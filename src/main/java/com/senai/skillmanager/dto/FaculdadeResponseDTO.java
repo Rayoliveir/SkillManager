@@ -1,5 +1,8 @@
 package com.senai.skillmanager.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FaculdadeResponseDTO {
     private Long id;
     private String nome;

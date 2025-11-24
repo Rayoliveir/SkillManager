@@ -1,7 +1,9 @@
 package com.senai.skillmanager.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.senai.skillmanager.model.empresa.TipoEmpresa;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmpresaResponseDTO {
 
     private Long id;

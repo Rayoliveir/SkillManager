@@ -1,7 +1,6 @@
 package com.senai.skillmanager.model.empresa;
 
 public enum Cargo {
-    ADMIN("Administrador"),
     SUPERVISOR("Supervisor"),
     GERENTE("Gerente");
 

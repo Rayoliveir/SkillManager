@@ -1,8 +1,11 @@
 package com.senai.skillmanager.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.senai.skillmanager.model.Genero;
 import java.time.LocalDate;
+import java.util.List; // --- ADICIONADO
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EstagiarioResponseDTO {
 
     private Long id;
@@ -15,6 +18,14 @@ public class EstagiarioResponseDTO {
     private EmpresaResponseDTO empresa;
     private EnderecoDTO endereco;
     private DadosAcademicosResponseDTO dadosAcademicos;
+
+    // --- ADICIONADO: Para o "Fluxo 2" ---
+    // Quando o Coordenador/Supervisor pedir os detalhes de UM estagiário,
+    // nós vamos preencher esta lista com as avaliações dele.
+    private List<AvaliacaoResponseDTO> avaliacoes;
+    // (Lembre-se: 'competencias' não pode ser adicionado pois não há Repositório/DTO)
+
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -94,5 +105,14 @@ public class EstagiarioResponseDTO {
 
     public void setDadosAcademicos(DadosAcademicosResponseDTO dadosAcademicos) {
         this.dadosAcademicos = dadosAcademicos;
+    }
+
+    // --- GETTER/SETTER ADICIONADO ---
+    public List<AvaliacaoResponseDTO> getAvaliacoes() {
+        return avaliacoes;
+    }
+
+    public void setAvaliacoes(List<AvaliacaoResponseDTO> avaliacoes) {
+        this.avaliacoes = avaliacoes;
     }
 }
