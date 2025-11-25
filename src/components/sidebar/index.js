@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './styles.css';
+import { 
+  LayoutDashboard, Users, Star, FileText, 
+  Settings, User, Rocket, MessageCircle, 
+  Trophy, LogOut, ChevronLeft, ChevronRight,
+  BarChart3, Clipboard, FileBarChart
+} from "lucide-react";
 
 const Sidebar = ({ isOpen, toggleSidebar, userRole, onNavigate }) => {
   const { logout, user } = useAuth();
@@ -30,28 +36,28 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole, onNavigate }) => {
   const getMenuItems = () => {
     if (userRole === 'faculdade') {
       return [
-        { id: 'dashboard', label: 'Dashboard', icon: '📊', path: '/dashboard' },
-        { id: 'interns', label: 'Estagiários', icon: '👥', path: '/dashboard' },
-        { id: 'evaluations', label: 'Avaliações', icon: '⭐', path: '/dashboard' },
-        { id: 'reports', label: 'Relatórios', icon: '📋', path: '/dashboard' },
-        { id: 'settings', label: 'Configurações', icon: '⚙️', path: '/dashboard' }
+        { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
+        { id: 'interns', label: 'Estagiários', icon: <Users size={20} />, path: '/dashboard' },
+        { id: 'evaluations', label: 'Avaliações', icon: <Star size={20} />, path: '/dashboard' },
+        { id: 'reports', label: 'Relatórios', icon: <FileText size={20} />, path: '/dashboard' },
+        { id: 'settings', label: 'Configurações', icon: <Settings size={20} />, path: '/dashboard' }
       ];
     } else if (userRole === 'funcionario') {
       return [
-        { id: 'dashboard', label: 'Dashboard', icon: '📊', path: '/dashboard' },
-        { id: 'interns', label: 'Meus Estagiários', icon: '👤', path: '/dashboard' },
-        { id: 'evaluations', label: 'Avaliações', icon: '📝', path: '/dashboard' },
-        { id: 'reports', label: 'Relatórios', icon: '📈', path: '/dashboard' },
-        { id: 'settings', label: 'Configurações', icon: '⚙️', path: '/dashboard' }
+        { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
+        { id: 'interns', label: 'Meus Estagiários', icon: <Users size={20} />, path: '/dashboard' },
+        { id: 'evaluations', label: 'Avaliações', icon: <Clipboard size={20} />, path: '/dashboard' },
+        { id: 'reports', label: 'Relatórios', icon: <FileBarChart size={20} />, path: '/dashboard' },
+        { id: 'settings', label: 'Configurações', icon: <Settings size={20} />, path: '/dashboard' }
       ];
     } else {
       // Default for estagiario
       return [
-        { id: 'dashboard', label: 'Dashboard', icon: '📊', path: '/dashboard' },
-        { id: 'profile', label: 'Meu Perfil', icon: '👤', path: '/dashboard' },
-        { id: 'skills', label: 'Competências', icon: '🚀', path: '/dashboard' },
-        { id: 'feedback', label: 'Feedbacks', icon: '💬', path: '/dashboard' },
-        { id: 'achievements', label: 'Conquistas', icon: '🏆', path: '/dashboard' }
+        { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
+        { id: 'profile', label: 'Meu Perfil', icon: <User size={20} />, path: '/dashboard' },
+        { id: 'skills', label: 'Competências', icon: <Rocket size={20} />, path: '/dashboard' },
+        { id: 'feedback', label: 'Feedbacks', icon: <MessageCircle size={20} />, path: '/dashboard' },
+        { id: 'achievements', label: 'Conquistas', icon: <Trophy size={20} />, path: '/dashboard' }
       ];
     }
   };
@@ -119,11 +125,11 @@ const Sidebar = ({ isOpen, toggleSidebar, userRole, onNavigate }) => {
         
         <div className="sidebar-footer">
           <button className="logout-btn" onClick={logout}>
-            <span className="nav-icon">🚪</span>
+            <span className="nav-icon"><LogOut size={20} /></span>
             {!collapsed && <span className="nav-text">Sair</span>}
           </button>
           <button className="collapse-btn" onClick={toggleCollapse}>
-            <span className="nav-icon">{collapsed ? '→' : '←'}</span>
+            <span className="nav-icon">{collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}</span>
             {!collapsed && <span className="nav-text">{collapsed ? 'Expandir' : 'Recolher'}</span>}
           </button>
         </div>

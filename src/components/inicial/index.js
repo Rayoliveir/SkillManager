@@ -13,11 +13,11 @@ function Inicial() {
       <main className="main-inicial">
         <div className="hero-section">
           <div className="hero-content">
-            {/* <div className="hero-badge">
+            <div className="hero-badge">
               <span className="badge-text">NOVO</span>
               <span className="badge-divider">•</span>
-              <span className="badge-highlight">Versão 2.0 disponível</span>
-            </div> */}
+              <span className="badge-highlight">Versão 1.0 disponível</span>
+            </div>
             <h1 className="hero-title">Gerencie suas <span className="highlight">habilidades</span> de forma inteligente</h1>
             <p className="hero-description">
               Transforme seu potencial em resultados concretos. Nosso sistema inteligente ajuda você a identificar, 
@@ -131,7 +131,7 @@ function Inicial() {
         <div className="testimonial-container">
           <div className="testimonial-content">
             <h3 className="testimonial-quote">"O SkillManager revolucionou nossa forma de gerenciar o desenvolvimento profissional. A plataforma é intuitiva e os resultados são impressionantes."</h3>
-            <div className="testimonial-author">
+            {/* <div className="testimonial-author">
               <div className="author-avatar">
                 <img src="/assets/images/default-avatar.png" alt="Avatar" />
               </div>
@@ -139,7 +139,7 @@ function Inicial() {
                 <h4 className="author-name">Maria Silva</h4>
                 <p className="author-title">Diretora de RH, TechCorp</p>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="testimonial-stats">
             <div className="stat-item">

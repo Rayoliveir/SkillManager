@@ -2,24 +2,26 @@ import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Importação das suas PÁGINAS (verifique se os nomes e caminhos estão corretos)
+// --- MUDANÇA: Importa o novo Roteador de Dashboard ---
+import DashboardRouter from './components/DashboardRouter'; // Verifique este caminho
+
+// Importação das suas PÁGINAS
 import TelaInicial from './pages/TelaInicial'; 
 import TelaLogin from './pages/TelaLogin';
 import TelaContato from './pages/TelaContato';
-import TelaDashboard from './pages/TelaDashboard'; 
+// import TelaDashboard from './pages/TelaDashboard'; // --- MUDANÇA: Não mais usado aqui
 import TelaCadastro from './pages/TelaCadastro'; 
 import TelaQuemSomos from './pages/TelaQuemSomos';
-import TelaEsqueciSenha from './pages/TelaEsqueciSenha';
 
-// --- NOVAS ROTAS DE CADASTRO ---
+// --- ROTAS DE CADASTRO ---
 import TelaCadastroEstagiario from './pages/TelaCadastroEstagiario';
 import TelaCadastroFaculdade from './pages/TelaCadastroFaculdade';
 import TelaCadastroFuncionario from './pages/TelaCadastroFuncionario';
 
-// --- NOVAS ROTAS DE DASHBOARD ---
-import TelaDashboardFuncionario from './pages/TelaDashboardFuncionario';
-import TelaDashboardFaculdade from './pages/TelaDashboardFaculdade';
-import TelaDashboardEstagiario from './pages/TelaDashboardEstagiario';
+// --- MUDANÇA: Dashboards individuais não são mais rotas diretas ---
+// import TelaDashboardFuncionario from './pages/TelaDashboardFuncionario';
+// import TelaDashboardFaculdade from './pages/TelaDashboardFaculdade';
+// import TelaDashboardEstagiario from './pages/TelaDashboardEstagiario';
 
 function App() {
   return (
@@ -30,7 +32,6 @@ function App() {
         <Route path="/quem-somos" element={<TelaQuemSomos />} />
         <Route path="/contato" element={<TelaContato />} />
         <Route path="/login" element={<TelaLogin />} />
-        <Route path="/esqueci-senha" element={<TelaEsqueciSenha />} />
         
         {/* --- ROTAS DE CADASTRO --- */}
         <Route path="/cadastro" element={<TelaCadastro />} />
@@ -38,39 +39,19 @@ function App() {
         <Route path="/cadastroFaculdade" element={<TelaCadastroFaculdade />} />
         <Route path="/cadastroFuncionario" element={<TelaCadastroFuncionario />} />
         
-        {/* --- ROTAS PROTEGIDAS (PRIVADAS) --- */}
+        {/* --- ROTA PROTEGIDA ÚNICA --- */}
+        {/* --- MUDANÇA: Todas as rotas de dashboard foram unificadas --- */}
         <Route 
           path="/dashboard" 
           element={
             <ProtectedRoute>
-              <TelaDashboard />
+              {/* Este novo componente decide qual dashboard mostrar */}
+              <DashboardRouter />
             </ProtectedRoute>
           } 
         />
-        <Route 
-          path="/dashboardFuncionario" 
-          element={
-            <ProtectedRoute>
-              <TelaDashboardFuncionario />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/dashboardFaculdade" 
-          element={
-            <ProtectedRoute>
-              <TelaDashboardFaculdade />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/dashboardEstagiario" 
-          element={
-            <ProtectedRoute>
-              <TelaDashboardEstagiario />
-            </ProtectedRoute>
-          } 
-        />
+        
+        {/* --- MUDANÇA: Rotas de dashboard específicas removidas --- */}
         
         {/* Rota padrão para qualquer outro caminho */}
         <Route path="*" element={<TelaInicial />} />

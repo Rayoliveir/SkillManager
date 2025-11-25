@@ -49,7 +49,7 @@ function Dashboard() {
         if (user.roles.includes('ROLE_SUPERVISOR') || user.roles.includes('ROLE_ADMIN')) {
             return (
                 <div>
-                    <h1>Dashboard do Supervisor</h1>
+                    <h1>Dashboard do supervisor</h1>
                     <pre>{JSON.stringify(dashboardData, null, 2)}</pre>
                     <button onClick={logout}>Sair</button>
                 </div>
@@ -58,7 +58,7 @@ function Dashboard() {
         if (user.roles.includes('ROLE_FACULDADE')) {
             return (
                 <div>
-                    <h1>Dashboard da Faculdade</h1>
+                    <h1>Dashboard do coordenador de estágio</h1>
                     <pre>{JSON.stringify(dashboardData, null, 2)}</pre>
                     <button onClick={logout}>Sair</button>
                 </div>
@@ -67,7 +67,7 @@ function Dashboard() {
         if (user.roles.includes('ROLE_ESTAGIARIO')) {
             return (
                 <div>
-                    <h1>Dashboard do Estagiário</h1>
+                    <h1>Dashboard do estagiário</h1>
                     <pre>{JSON.stringify(dashboardData, null, 2)}</pre>
                     <button onClick={logout}>Sair</button>
                 </div>

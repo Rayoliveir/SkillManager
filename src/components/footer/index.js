@@ -1,4 +1,6 @@
+import React from 'react';
 import './style.css';
+import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 
 function Footer() {
     return (
@@ -10,18 +12,23 @@ function Footer() {
                         Plataforma completa para gerenciamento de estagiários, 
                         com avaliações personalizadas e feedback contínuo.
                     </p>
+                    {/* CORREÇÃO AQUI: Aplicação do comentário de desativação na seção correta. */}
                     <div className="social-links">
-                        <a href="#" className="social-link">
-                            <img src="/assets/images/facebook.png" alt="Facebook" />
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a href="#" className="social-link" target="_blank" rel="noopener noreferrer">
+                            <Facebook size={24} />
                         </a>
-                        <a href="#" className="social-link">
-                            <img src="/assets/images/instagram.png" alt="Instagram" />
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a href="#" className="social-link" target="_blank" rel="noopener noreferrer">
+                            <Instagram size={24} />
                         </a>
-                        <a href="#" className="social-link">
-                            <img src="/assets/images/twitter.png" alt="Twitter" />
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a href="#" className="social-link" target="_blank" rel="noopener noreferrer">
+                            <Twitter size={24} />
                         </a>
-                        <a href="#" className="social-link">
-                            <img src="/assets/images/linkedin.png" alt="LinkedIn" />
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a href="#" className="social-link" target="_blank" rel="noopener noreferrer">
+                            <Linkedin size={24} />
                         </a>
                     </div>
                 </div>

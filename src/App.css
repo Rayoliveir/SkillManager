@@ -25,20 +25,6 @@
   --pumpkin:             #F47C2A; /* Pumpkin */
   --atomic-tangerine:    #F59351; /* Atomic tangerine */
   --ut-orange:           #F28D3B; /* UT Orange */
-
-  /* Default theme variables */
-  --cor-fundo-principal: var(--floral-white-2);
-  --cor-fundo-card: var(--floral-white);
-  --cor-texto-principal: var(--oxford-blue);
-  --cor-texto-secundario: var(--cadet-gray);
-  --cor-borda: var(--papaya-whip);
-  --cor-destaque-primario: var(--oxford-blue);
-  --cor-destaque-secundario: var(--glaucous);
-  --cor-destaque-aviso: var(--pumpkin);
-  --cor-destaque-perigo: var(--flame);
-  --cor-status-ativo: var(--celadon);
-  --cor-status-pendente: var(--pumpkin);
-  --cor-status-concluido: var(--glaucous);
 }
 
 .App {

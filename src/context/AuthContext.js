@@ -6,42 +6,30 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true); // --- NOVO: Estado de loading
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if user is already logged in
-        const token = localStorage.getItem('authToken');
-        const username = localStorage.getItem('username');
-        const roles = localStorage.getItem('roles');
-        
-        if (token && username && roles) {
-            try {
-                const parsedRoles = JSON.parse(roles);
-                const userData = {
-                    username: username,
-                    roles: parsedRoles,
-                    isAuthenticated: true
-                };
-                setUser(userData);
-            } catch (error) {
-                console.error("Error parsing user data:", error);
-                handleLogout();
+        // --- MUDANÇA: Remove o 'dev mode'
+        // Ao carregar a app, tenta carregar o utilizador do localStorage
+        try {
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                const userData = JSON.parse(storedUser);
+                // Define o utilizador no estado, se ele existir no localStorage
+                setUser({ ...userData, isAuthenticated: true });
             }
-        } else if (process.env.NODE_ENV === 'development') {
-            // Provide a default user in development mode
-            const defaultUser = {
-                username: 'devuser',
-                roles: ['ROLE_SUPERVISOR'],
-                isAuthenticated: true,
-                nome: 'Desenvolvedor'
-            };
-            setUser(defaultUser);
+        } catch (error) {
+            console.error("Erro ao carregar dados do utilizador:", error);
+            api.logout(); // Limpa o localStorage se estiver corrompido
         }
+        setLoading(false); // Termina o loading
     }, []);
 
     const handleLogin = async (username, password) => {
         try {
-            // Production login flow
+            // --- MUDANÇA: Chama a nova 'api.login' de 'services/api.js'
+            // A 'api.login' já guarda o token e o 'user' no localStorage
             const data = await api.login(username, password);
             
             const userData = {
@@ -50,52 +38,34 @@ export const AuthProvider = ({ children }) => {
                 isAuthenticated: true
             };
 
-            setUser(userData);
-            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData); // Atualiza o estado global
+            
+            // --- MUDANÇA: Redirecionamento unificado para /dashboard
+            // O nosso novo 'components/DashboardRouter.js' vai tratar o resto.
+            navigate('/dashboard');
 
-            // Redirect based on user role
-            if (data.roles && data.roles.length > 0) {
-                const role = data.roles[0];
-                if (role.includes('ESTAGIARIO')) {
-                    navigate('/dashboardEstagiario');
-                } else if (role.includes('FACULDADE')) {
-                    navigate('/dashboardFaculdade');
-                } else if (role.includes('SUPERVISOR') || role.includes('GERENTE')) {
-                    navigate('/dashboardFuncionario');
-                } else {
-                    navigate('/dashboard');
-                }
-            } else {
-                navigate('/dashboard');
-            }
         } catch (error) {
             console.error("Erro no login:", error);
-            handleLogout();
-            throw error;
+            // Re-lança o erro para que o componente de Login ('components/login/index.js') o apanhe
+            // e mostre a mensagem (ex: "Email ou senha inválidos.")
+            throw error; 
         }
     };
 
     const handleLogout = () => {
-        api.logout();
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('username');
-        localStorage.removeItem('roles');
-        localStorage.removeItem('user');
+        api.logout(); // --- MUDANÇA: Chama a nova 'api.logout'
         setUser(null);
         navigate('/login');
     };
 
-    // In development mode, always return authenticated
-    const isAuthenticated = process.env.NODE_ENV === 'development' ? true : !!user;
+    // Não renderiza a app até sabermos se o user está logado ou não
+    if (loading) {
+        return null; // ou um <LoadingSpinner />
+    }
 
     const value = {
-        user: process.env.NODE_ENV === 'development' && !user ? {
-            username: 'devuser',
-            roles: ['ROLE_SUPERVISOR'],
-            isAuthenticated: true,
-            nome: 'Desenvolvedor'
-        } : user,
-        isAuthenticated,
+        user, // O objeto do utilizador (ou null)
+        isAuthenticated: !!user, // true ou false
         login: handleLogin,
         logout: handleLogout,
     };

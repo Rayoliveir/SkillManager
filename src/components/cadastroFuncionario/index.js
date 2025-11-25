@@ -1,10 +1,12 @@
 import './styles.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { cadastrarFuncionario } from '../../services/api';
+// --- MUDANÇA: Importa a API correta (Supervisor) de 'services/api.js' ---
+import { cadastrarSupervisor } from '../../services/api';
 import useMensagem from '../../hooks/useMensagem';
 import MensagemFeedback from '../mensagemFeedback';
 import SliderForm from '../SliderForm';
+import { User, Building, Lock } from "lucide-react";
 
 function CadastroFuncionario() {
     const navigate = useNavigate();
@@ -13,18 +15,25 @@ function CadastroFuncionario() {
         email: '',
         senha: '',
         cargo: 'SUPERVISOR',
-        empresaCnpj: '',
+        empresaCnpj: '', // --- INFO: Usado no Fluxo A ("Sim")
         empresaCadastrada: 'sim', 
+        
+        // --- INFO: Usado no Fluxo B ("Não") ---
         empresa: {
-            cnpj: '',
+            cnpj: '', // Note: O back-end espera 'empresaCnpj' e 'empresa.cnpj'
             razaoSocial: '',
-            nomeFantasia: '',
+            nomeFantasia: '', // O back-end chama isto de 'nome'
+            // --- CORREÇÃO: O seu back-end (EmpresaDTO) precisa disto: ---
+            tipoEmpresa: 'SERVICO', // <- Adicionado valor padrão
+            
             endereco: {
                 logradouro: '',
                 cidade: '',
                 bairro: '',
-                estado: 'SP',
-                numero: ''
+                estados: 'SP', // <- Corrigido de 'estado' para 'estados'
+                numero: '',
+                // --- CORREÇÃO: O seu back-end (EnderecoDTO) precisa disto: ---
+                cep: '' // <- Adicionado campo
             }
         }
     });
@@ -34,32 +43,22 @@ function CadastroFuncionario() {
         const { name, value } = e.target;
         const keys = name.split('.');
         
-        if (name.startsWith('empresa.')) {
-            if (keys.length > 2) {
-                setFormData(prev => ({
-                    ...prev,
-                    empresa: {
-                        ...prev.empresa,
-                        [keys[1]]: {
-                            ...prev.empresa[keys[1]],
-                            [keys[2]]: value
-                        }
-                    }
-                }));
-            } else {
-                setFormData(prev => ({
-                    ...prev,
-                    empresa: {
-                        ...prev.empresa,
-                        [keys[1]]: value
-                    }
-                }));
-            }
-        } else if (name === 'empresaCadastrada') {
-            setFormData(prev => ({
-                ...prev,
-                empresaCadastrada: value
-            }));
+        if (keys.length > 1) {
+            // --- INFO: Trata campos aninhados como 'empresa.cnpj', 'empresa.endereco.logradouro'
+            setFormData(prev => {
+                // --- INFO: Cria uma cópia profunda do objeto
+                const newData = JSON.parse(JSON.stringify(prev)); 
+                let current = newData;
+                
+                // --- INFO: Navega até o penúltimo nível
+                for (let i = 0; i < keys.length - 1; i++) {
+                    current = current[keys[i]];
+                }
+                
+                // --- INFO: Define o valor no último nível
+                current[keys[keys.length - 1]] = value;
+                return newData;
+            });
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
@@ -68,20 +67,51 @@ function CadastroFuncionario() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        try {
-            if (formData.empresaCadastrada === 'nao') {
-                console.log('Empresa a ser cadastrada:', formData.empresa);
-            }
-            
-            const payload = {
-                ...formData,
-                empresaCnpj: formData.empresaCnpj.replace(/\D/g, '')
+        // --- INFO: Prepara o payload com base na escolha do usuário
+        let payload;
+        
+        if (formData.empresaCadastrada === 'sim') {
+            // --- Fluxo A: Empresa já cadastrada ---
+            payload = {
+                nome: formData.nome,
+                email: formData.email,
+                senha: formData.senha,
+                cargo: formData.cargo,
+                empresaCnpj: formData.empresaCnpj.replace(/\D/g, '') // Remove formatação
             };
+        } else {
+            // --- Fluxo B: Cadastrar nova empresa ---
+            payload = {
+                nome: formData.nome,
+                email: formData.email,
+                senha: formData.senha,
+                cargo: formData.cargo,
+                empresa: {
+                    cnpj: formData.empresa.cnpj.replace(/\D/g, ''),
+                    razaoSocial: formData.empresa.razaoSocial,
+                    nome: formData.empresa.nomeFantasia, // <- Corrigido para 'nome'
+                    tipoEmpresa: formData.empresa.tipoEmpresa,
+                    endereco: {
+                        logradouro: formData.empresa.endereco.logradouro,
+                        cidade: formData.empresa.endereco.cidade,
+                        bairro: formData.empresa.endereco.bairro,
+                        estados: formData.empresa.endereco.estados, // <- Corrigido para 'estados'
+                        numero: formData.empresa.endereco.numero,
+                        cep: formData.empresa.endereco.cep.replace(/\D/g, '') // <- Adicionado
+                    }
+                }
+            };
+        }
 
-            await cadastrarFuncionario(payload);
-            exibirMensagem('Funcionário cadastrado com sucesso! Redirecionando...', 'sucesso');
+        try {
+            // --- CORREÇÃO: Chama a API correta de 'services/api.js' ---
+            await cadastrarSupervisor(payload);
+            exibirMensagem('Supervisor cadastrado com sucesso! Redirecionando...', 'sucesso');
             setTimeout(() => { navigate('/login'); }, 2000);
         } catch (err) {
+            // --- MUDANÇA: Mostra o erro real da API
+            // ex: "Email já cadastrado."
+            // ex: "Empresa com CNPJ ... não encontrada. Para cadastrá-la..."
             exibirMensagem(err.message || 'Ocorreu um erro no cadastro.', 'erro');
         }
     };
@@ -95,7 +125,7 @@ function CadastroFuncionario() {
                 <>
                     <fieldset className="dados-pessoais">
                         <legend>
-                            <img src='/assets/images/icone-pessoa.png' alt='icone-pessoa' />
+                            <User size={20} />
                             Dados pessoais
                         </legend>
                         <label>Nome completo <br />
@@ -138,6 +168,15 @@ function CadastroFuncionario() {
                                     <input type="text" name="empresa.nomeFantasia" placeholder="Nome Fantasia da Empresa" required value={formData.empresa.nomeFantasia} onChange={handleChange} />
                                 </label>
                                 
+                                {/* --- NOVO: Campo Tipo Empresa (obrigatório pelo back-end) --- */}
+                                <label>Tipo da Empresa<br />
+                                    <select name="empresa.tipoEmpresa" value={formData.empresa.tipoEmpresa} onChange={handleChange} required>
+                                        <option value="SERVICO">Serviço</option>
+                                        <option value="COMERCIO">Comércio</option>
+                                        <option value="COMERCIO_E_SERVICO">Comércio e Serviço</option>
+                                    </select>
+                                </label>
+                                
                                 <h4>Endereço da Empresa</h4>
                                 <label>Logradouro<br />
                                     <input type="text" name="empresa.endereco.logradouro" placeholder="Rua dos Bandeirantes" required value={formData.empresa.endereco.logradouro} onChange={handleChange} />
@@ -152,9 +191,14 @@ function CadastroFuncionario() {
                                     <input type="text" name="empresa.endereco.cidade" placeholder="Salvador" required value={formData.empresa.endereco.cidade} onChange={handleChange} />
                                 </label>
                                 <label>Estado<br />
-                                    <select name="empresa.endereco.estado" required value={formData.empresa.endereco.estado} onChange={handleChange}>
+                                    {/* --- CORREÇÃO: 'name' corrigido para 'empresa.endereco.estados' --- */}
+                                    <select name="empresa.endereco.estados" required value={formData.empresa.endereco.estados} onChange={handleChange}>
                                         {estadosBrasileiros.map(uf => <option key={uf} value={uf}>{uf}</option>)}
                                     </select>
+                                </label>
+                                {/* --- NOVO: Campo CEP (obrigatório pelo back-end) --- */}
+                                <label>CEP<br />
+                                    <input type="text" name="empresa.endereco.cep" placeholder="00000-000" required value={formData.empresa.endereco.cep} onChange={handleChange} />
                                 </label>
                             </>
                         )}
@@ -168,7 +212,7 @@ function CadastroFuncionario() {
                 <>
                     <fieldset className="dados-acesso">
                         <legend>
-                            <img src='/assets/images/icone-cadeado.png' alt='icone-cadeado' />
+                            <Lock size={20} />
                             Dados de acesso e trabalho
                         </legend>
                         <label>Senha<br />
@@ -178,7 +222,7 @@ function CadastroFuncionario() {
                             <select name="cargo" value={formData.cargo} onChange={handleChange} required>
                                 <option value="SUPERVISOR">Supervisor</option>
                                 <option value="GERENTE">Gerente</option>
-                                <option value="ADMIN">Administrador</option>
+                                {/* --- CORREÇÃO: Opção 'ADMIN' removida (Bug do Back-end) --- */}
                             </select>
                         </label>
                     </fieldset>

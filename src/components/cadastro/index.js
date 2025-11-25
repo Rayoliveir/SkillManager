@@ -1,9 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Users, GraduationCap, User } from 'lucide-react';
 import './styles.css'
-import estagiarioIcon from '../../assets/images/icone-estagiario.png';
-import faculdadeIcon from '../../assets/images/icone-faculdade.png';
-import funcionarioIcon from '../../assets/images/icone-funcionario.png';
 
 function Cadastro() {
     const navigate = useNavigate();
@@ -13,7 +10,7 @@ function Cadastro() {
     const irParaFuncionario = () => navigate('/cadastroFuncionario');
 
     return (
-        <main className="main-cadastro"> {/* <-- MUDANÇA APLICADA AQUI */}
+        <main className="main-cadastro">
             <div className="escolha-cadastro">
                 <div className="titulo">
                     <h1>Quem você quer cadastrar?</h1>
@@ -23,7 +20,7 @@ function Cadastro() {
                 <div className="cards">
                     <div className="card-escolha">
                         <div>
-                            <img src={estagiarioIcon} alt="icone-estagiario" />
+                            <Users size={48} />
                         </div>
                         <h2>Estagiário</h2>
                         <aside>Cadastro para estudantes em estágio</aside>
@@ -32,7 +29,7 @@ function Cadastro() {
                     </div>
                     <div className="card-escolha">
                         <div>
-                            <img src={faculdadeIcon} alt="icone-faculdade" />
+                            <GraduationCap size={48} />
                         </div>
                         <h2>Faculdade</h2>
                         <aside>Cadastro de instituição de ensino</aside>
@@ -41,7 +38,7 @@ function Cadastro() {
                     </div>
                     <div className="card-escolha">
                         <div>
-                            <img src={funcionarioIcon} alt="icone-supervisor" />
+                            <User size={48} />
                         </div>
                         <h2>Supervisor</h2>
                         <aside>Cadastro de colaboradores da empresa</aside>

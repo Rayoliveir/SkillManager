@@ -1,6 +1,7 @@
 import './styles.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+// --- INFO: A 'services/api.js' agora trata os erros disto ---
 import { cadastrarEstagiario } from '../../services/api';
 import useMensagem from '../../hooks/useMensagem';
 import MensagemFeedback from '../mensagemFeedback';
@@ -58,6 +59,7 @@ function CadastroEstagiario() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // --- INFO: A sua lógica de payload aqui já estava correta ---
         const payload = {
             ...formData,
             cpf: formData.cpf.replace(/\D/g, ''),
@@ -69,6 +71,7 @@ function CadastroEstagiario() {
             dadosAcademicos: {
                 ...formData.dadosAcademicos,
                 faculdadeCnpj: formData.dadosAcademicos.faculdadeCnpj.replace(/\D/g, ''),
+                // --- INFO: Isto já envia 'YYYY-MM', que é o que o back-end espera. Perfeito.
                 previsaoFormatura: formData.dadosAcademicos.previsaoFormatura ? formData.dadosAcademicos.previsaoFormatura.substring(0, 7) : ''
             }
         };
@@ -80,6 +83,9 @@ function CadastroEstagiario() {
                 navigate('/login');
             }, 2000);
         } catch (err) {
+            // --- INFO: Esta linha já estava CORRETA.
+            // Ela vai ler a mensagem do 'apiFetch' (de 'services/api.js')
+            // ex: "Email já cadastrado." ou "Empresa não encontrada com o código: XYZ"
             exibirMensagem(err.message || 'Ocorreu um erro no cadastro.', 'erro');
         }
     };

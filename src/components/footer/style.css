@@ -3,6 +3,7 @@
     color: #fff;
     font-family: 'Inter', sans-serif;
     padding: 0;
+    margin-top: auto; /* Push footer to bottom */
 }
 
 .footer-content {
@@ -44,14 +45,16 @@
     gap: 15px;
 }
 
-.social-link img {
+.social-link svg {
     width: 24px;
     height: 24px;
     transition: transform 0.3s ease;
+    color: #FEF8EC;
 }
 
-.social-link img:hover {
+.social-link svg:hover {
     transform: translateY(-3px);
+    color: #F47C2A;
 }
 
 .footer-section ul {
@@ -172,7 +175,7 @@
         font-size: 0.8rem;
     }
     
-    .social-link img {
+    .social-link svg {
         width: 20px;
         height: 20px;
     }
