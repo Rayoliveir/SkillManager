@@ -52,20 +52,20 @@ function Header() {
                     {isMenuOpen ? '✕' : '☰'}
                 </button>
 
-                <div className={`redes__sociais ${isMenuOpen ? 'mobile-hidden' : ''}`}>
-                    <div>
-                        <img src="/assets/images/facebook.png" alt="facebook" />
-                    </div>
-                    <div>
-                        <img src="/assets/images/instagram.png" alt="instagram" />
-                    </div>
-                    <div>
-                        <img src="/assets/images/twitter.png" alt="twitter" />
-                    </div>
-                    <div>
-                        <img src="/assets/images/chat.png" alt="fale-conosco" />
-                    </div>
-                </div>
+                // <div className={`redes__sociais ${isMenuOpen ? 'mobile-hidden' : ''}`}>
+                //     <div>
+                //         <img src="/assets/images/facebook.png" alt="facebook" />
+                //     </div>
+                //     <div>
+                //         <img src="/assets/images/instagram.png" alt="instagram" />
+                //     </div>
+                //     <div>
+                //         <img src="/assets/images/twitter.png" alt="twitter" />
+                //     </div>
+                //     <div>
+                //         <img src="/assets/images/chat.png" alt="fale-conosco" />
+                //     </div>
+                // </div>
             </header>
 
             <nav className={`navegacao ${isMenuOpen ? 'active' : ''}`}>
