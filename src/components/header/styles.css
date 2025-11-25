@@ -86,7 +86,6 @@ header {
     height: auto;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     width: 100%;
-    order: 3;
 }
 
 .navegacao dl {

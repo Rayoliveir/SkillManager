@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { User, Rocket, MessageCircle, Trophy, Edit, X, Save, Phone, Mail, Users, Zap, Code, PenTool, Award, Star, GraduationCap, Lightbulb, Book } from 'lucide-react';
 import './styles.css';
 
 const Sidebar = ({ activeTab, onTabChange }) => (
@@ -13,28 +14,28 @@ const Sidebar = ({ activeTab, onTabChange }) => (
                 className={`sidebar-item ${activeTab === 'informacoes' ? 'active' : ''}`} 
                 onClick={() => onTabChange('informacoes')}
             >
-                <span className="sidebar-icon">👤</span>
+                <User className="sidebar-icon" size={20} />
                 <span className="sidebar-text">Informações</span>
             </button>
             <button 
                 className={`sidebar-item ${activeTab === 'competencias' ? 'active' : ''}`} 
                 onClick={() => onTabChange('competencias')}
             >
-                <span className="sidebar-icon">🚀</span>
+                <Rocket className="sidebar-icon" size={20} />
                 <span className="sidebar-text">Competências</span>
             </button>
             <button 
                 className={`sidebar-item ${activeTab === 'feedbacks' ? 'active' : ''}`} 
                 onClick={() => onTabChange('feedbacks')}
             >
-                <span className="sidebar-icon">💬</span>
+                <MessageCircle className="sidebar-icon" size={20} />
                 <span className="sidebar-text">Feedbacks</span>
             </button>
             <button 
                 className={`sidebar-item ${activeTab === 'conquistas' ? 'active' : ''}`} 
                 onClick={() => onTabChange('conquistas')}
             >
-                <span className="sidebar-icon">🏆</span>
+                <Trophy className="sidebar-icon" size={20} />
                 <span className="sidebar-text">Conquistas</span>
             </button>
         </nav>
@@ -82,7 +83,9 @@ const ProfileModal = ({ onClose }) => {
             <div className="evaluation-form-modal">
                 <div className="form-header">
                     <h3>Editar Perfil</h3>
-                    <button className="close-btn" onClick={onClose}>×</button>
+                    <button className="close-btn" onClick={onClose}>
+                        <X size={24} />
+                    </button>
                 </div>
                 
                 <form onSubmit={handleSubmit} className="form-body">
@@ -127,7 +130,8 @@ const ProfileModal = ({ onClose }) => {
                             Cancelar
                         </button>
                         <button type="submit" className="btn-primary">
-                            Salvar Alterações
+                            <Save size={16} />
+                            <span className="btn-text">Salvar Alterações</span>
                         </button>
                     </div>
                 </form>
@@ -139,28 +143,36 @@ const ProfileModal = ({ onClose }) => {
 const StatsCard = () => (
     <div className="stats-overview">
         <div className="stat-card">
-            <div className="stat-icon primary">🚀</div>
+            <div className="stat-icon primary">
+                <Rocket size={24} />
+            </div>
             <div className="stat-info">
                 <h3>15</h3>
                 <p>Competências</p>
             </div>
         </div>
         <div className="stat-card">
-            <div className="stat-icon secondary">💬</div>
+            <div className="stat-icon secondary">
+                <MessageCircle size={24} />
+            </div>
             <div className="stat-info">
                 <h3>8</h3>
                 <p>Feedbacks</p>
             </div>
         </div>
         <div className="stat-card">
-            <div className="stat-icon success">🏆</div>
+            <div className="stat-icon success">
+                <Trophy size={24} />
+            </div>
             <div className="stat-info">
                 <h3>5</h3>
                 <p>Conquistas</p>
             </div>
         </div>
         <div className="stat-card">
-            <div className="stat-icon warning">⭐</div>
+            <div className="stat-icon warning">
+                <Star size={24} />
+            </div>
             <div className="stat-info">
                 <h3>4.2</h3>
                 <p>Média</p>
@@ -176,7 +188,7 @@ const AbaInformacoes = ({ dadosEstagiario, onEditProfile }) => (
                 <div className="card-header">
                     <h3>Informações Pessoais</h3>
                     <button className="btn-primary" onClick={onEditProfile}>
-                        <span className="btn-icon">✏️</span>
+                        <Edit className="btn-icon" size={16} />
                         <span className="btn-text">Editar Perfil</span>
                     </button>
                 </div>
@@ -252,6 +264,7 @@ const AbaCompetencias = () => (
                         <div className="skill-info">
                             <span className="skill-name">Comunicação</span>
                             <span className="skill-level">Avançado</span>
+                            <Rocket size={16} />
                         </div>
                         <div className="skill-bar">
                             <div className="skill-progress" style={{width: '85%'}}></div>
@@ -261,6 +274,7 @@ const AbaCompetencias = () => (
                         <div className="skill-info">
                             <span className="skill-name">Trabalho em Equipe</span>
                             <span className="skill-level">Intermediário</span>
+                            <Users size={16} />
                         </div>
                         <div className="skill-bar">
                             <div className="skill-progress" style={{width: '80%'}}></div>
@@ -270,6 +284,7 @@ const AbaCompetencias = () => (
                         <div className="skill-info">
                             <span className="skill-name">Resolução de Problemas</span>
                             <span className="skill-level">Iniciante</span>
+                            <Zap size={16} />
                         </div>
                         <div className="skill-bar">
                             <div className="skill-progress" style={{width: '45%'}}></div>
@@ -279,6 +294,7 @@ const AbaCompetencias = () => (
                         <div className="skill-info">
                             <span className="skill-name">Liderança</span>
                             <span className="skill-level">Iniciante</span>
+                            <User size={16} />
                         </div>
                         <div className="skill-bar">
                             <div className="skill-progress" style={{width: '30%'}}></div>
@@ -288,6 +304,7 @@ const AbaCompetencias = () => (
                         <div className="skill-info">
                             <span className="skill-name">Programação</span>
                             <span className="skill-level">Intermediário</span>
+                            <Code size={16} />
                         </div>
                         <div className="skill-bar">
                             <div className="skill-progress" style={{width: '65%'}}></div>
@@ -297,6 +314,7 @@ const AbaCompetencias = () => (
                         <div className="skill-info">
                             <span className="skill-name">Design</span>
                             <span className="skill-level">Básico</span>
+                            <PenTool size={16} />
                         </div>
                         <div className="skill-bar">
                             <div className="skill-progress" style={{width: '25%'}}></div>
@@ -399,7 +417,9 @@ const AbaConquistas = () => (
             <div className="card-body">
                 <div className="achievements-grid">
                     <div className="achievement-card">
-                        <div className="achievement-icon">🏆</div>
+                        <div className="achievement-icon">
+                            <Trophy size={32} />
+                        </div>
                         <div className="achievement-info">
                             <h4>Primeiro Projeto</h4>
                             <p>Concluiu o primeiro projeto com sucesso</p>
@@ -407,7 +427,9 @@ const AbaConquistas = () => (
                         </div>
                     </div>
                     <div className="achievement-card">
-                        <div className="achievement-icon">⭐</div>
+                        <div className="achievement-icon">
+                            <Star size={32} />
+                        </div>
                         <div className="achievement-info">
                             <h4>Destaque do Mês</h4>
                             <p>Reconhecido como destaque em abril</p>
@@ -415,7 +437,9 @@ const AbaConquistas = () => (
                         </div>
                     </div>
                     <div className="achievement-card">
-                        <div className="achievement-icon">🎓</div>
+                        <div className="achievement-icon">
+                            <GraduationCap size={32} />
+                        </div>
                         <div className="achievement-info">
                             <h4>Curso Completo</h4>
                             <p>Finalizou o curso de liderança</p>
@@ -423,7 +447,9 @@ const AbaConquistas = () => (
                         </div>
                     </div>
                     <div className="achievement-card">
-                        <div className="achievement-icon">🚀</div>
+                        <div className="achievement-icon">
+                            <Rocket size={32} />
+                        </div>
                         <div className="achievement-info">
                             <h4>Inovação</h4>
                             <p>Propôs solução inovadora para problema</p>
@@ -431,7 +457,9 @@ const AbaConquistas = () => (
                         </div>
                     </div>
                     <div className="achievement-card">
-                        <div className="achievement-icon">📚</div>
+                        <div className="achievement-icon">
+                            <Book size={32} />
+                        </div>
                         <div className="achievement-info">
                             <h4>100% Presença</h4>
                             <p>Manteve 100% de presença no mês</p>
@@ -439,7 +467,9 @@ const AbaConquistas = () => (
                         </div>
                     </div>
                     <div className="achievement-card">
-                        <div className="achievement-icon">💡</div>
+                        <div className="achievement-icon">
+                            <Lightbulb size={32} />
+                        </div>
                         <div className="achievement-info">
                             <h4>Ideia Criativa</h4>
                             <p>Sugestão implementada pela equipe</p>

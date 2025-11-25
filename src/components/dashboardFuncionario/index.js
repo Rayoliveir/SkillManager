@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { User, Users, Star, BarChart, Edit, X, Save, Phone, Mail, FileText, Check, Award } from 'lucide-react';
 // import * as api from '../../services/api'; // Commented out as it's not being used currently
 import FormularioAvaliacao from '../formularioAvaliacao';
 import './styles.css';
@@ -15,28 +16,28 @@ const Sidebar = ({ activeTab, onTabChange }) => (
                 className={`sidebar-item ${activeTab === 'informacoes' ? 'active' : ''}`} 
                 onClick={() => onTabChange('informacoes')}
             >
-                <span className="sidebar-icon">👤</span>
+                <User className="sidebar-icon" size={20} />
                 <span className="sidebar-text">Informações</span>
             </button>
             <button 
                 className={`sidebar-item ${activeTab === 'estagiarios' ? 'active' : ''}`} 
                 onClick={() => onTabChange('estagiarios')}
             >
-                <span className="sidebar-icon">👥</span>
+                <Users className="sidebar-icon" size={20} />
                 <span className="sidebar-text">Estagiários</span>
             </button>
             <button 
                 className={`sidebar-item ${activeTab === 'avaliacoes' ? 'active' : ''}`} 
                 onClick={() => onTabChange('avaliacoes')}
             >
-                <span className="sidebar-icon">⭐</span>
+                <Star className="sidebar-icon" size={20} />
                 <span className="sidebar-text">Avaliações</span>
             </button>
             <button 
                 className={`sidebar-item ${activeTab === 'relatorios' ? 'active' : ''}`} 
                 onClick={() => onTabChange('relatorios')}
             >
-                <span className="sidebar-icon">📊</span>
+                <BarChart className="sidebar-icon" size={20} />
                 <span className="sidebar-text">Relatórios</span>
             </button>
         </nav>
@@ -84,7 +85,9 @@ const ProfileModal = ({ onClose }) => {
             <div className="evaluation-form-modal">
                 <div className="form-header">
                     <h3>Editar Perfil</h3>
-                    <button className="close-btn" onClick={onClose}>×</button>
+                    <button className="close-btn" onClick={onClose}>
+                        <X size={24} />
+                    </button>
                 </div>
                 
                 <form onSubmit={handleSubmit} className="form-body">
@@ -129,7 +132,8 @@ const ProfileModal = ({ onClose }) => {
                             Cancelar
                         </button>
                         <button type="submit" className="btn-primary">
-                            Salvar Alterações
+                            <Save size={16} />
+                            <span className="btn-text">Salvar Alterações</span>
                         </button>
                     </div>
                 </form>
@@ -141,28 +145,36 @@ const ProfileModal = ({ onClose }) => {
 const StatsCard = () => (
     <div className="stats-overview">
         <div className="stat-card">
-            <div className="stat-icon primary">👥</div>
+            <div className="stat-icon primary">
+                <Users size={24} />
+            </div>
             <div className="stat-info">
                 <h3>12</h3>
                 <p>Estagiários</p>
             </div>
         </div>
         <div className="stat-card">
-            <div className="stat-icon secondary">⭐</div>
+            <div className="stat-icon secondary">
+                <Star size={24} />
+            </div>
             <div className="stat-info">
                 <h3>24</h3>
                 <p>Avaliações</p>
             </div>
         </div>
         <div className="stat-card">
-            <div className="stat-icon success">📝</div>
+            <div className="stat-icon success">
+                <FileText size={24} />
+            </div>
             <div className="stat-info">
                 <h3>8</h3>
                 <p>Pendentes</p>
             </div>
         </div>
         <div className="stat-card">
-            <div className="stat-icon warning">✅</div>
+            <div className="stat-icon warning">
+                <Check size={24} />
+            </div>
             <div className="stat-info">
                 <h3>15</h3>
                 <p>Concluídos</p>
@@ -178,7 +190,7 @@ const AbaInformacoes = ({ dadosFuncionario, onEditProfile }) => (
                 <div className="card-header">
                     <h3>Informações Pessoais</h3>
                     <button className="btn-primary" onClick={onEditProfile}>
-                        <span className="btn-icon">✏️</span>
+                        <Edit className="btn-icon" size={16} />
                         <span className="btn-text">Editar Perfil</span>
                     </button>
                 </div>

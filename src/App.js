@@ -9,6 +9,7 @@ import TelaContato from './pages/TelaContato';
 import TelaDashboard from './pages/TelaDashboard'; 
 import TelaCadastro from './pages/TelaCadastro'; 
 import TelaQuemSomos from './pages/TelaQuemSomos';
+import TelaEsqueciSenha from './pages/TelaEsqueciSenha';
 
 // --- NOVAS ROTAS DE CADASTRO ---
 import TelaCadastroEstagiario from './pages/TelaCadastroEstagiario';
@@ -29,6 +30,7 @@ function App() {
         <Route path="/quem-somos" element={<TelaQuemSomos />} />
         <Route path="/contato" element={<TelaContato />} />
         <Route path="/login" element={<TelaLogin />} />
+        <Route path="/esqueci-senha" element={<TelaEsqueciSenha />} />
         
         {/* --- ROTAS DE CADASTRO --- */}
         <Route path="/cadastro" element={<TelaCadastro />} />

@@ -7,20 +7,26 @@
     flex-direction: column;
     gap: 1em;
     padding: 20px;
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #FCF5EA 0%, #FEF8EC 50%, #FEFAEB 100%);
     min-height: 100vh;
+    position: relative;
+    overflow: hidden;
 }
 
 .main-estagiario h1 {
-    font-size: 2rem;
-    color: rgb(0, 0, 61);
+    font-size: 2.5rem;
+    color: #131C2F;
     text-align: center;
     margin-bottom: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
 }
 
 .slider-form-wrapper {
     width: 100%;
     max-width: 800px;
+    position: relative;
+    z-index: 10;
 }
 
 .cadastro-estagiario {
@@ -39,15 +45,16 @@
 }
 
 .cadastro-estagiario fieldset {
-    border-radius: 10px;
+    border-radius: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 15px;
-    padding: 20px;
-    border: 1px solid #e0e0e0;
-    margin-bottom: 20px;
+    gap: 20px;
+    padding: 25px;
+    border: none;
+    margin-bottom: 25px;
+    background: #FEF8EC;
 }
 
 .cadastro-estagiario fieldset legend {
@@ -55,14 +62,15 @@
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    background: #131C2F;
-    width: 200px;
-    height: 40px;
-    border-radius: 10px;
-    gap: 6px;
+    background: linear-gradient(135deg, #5D82AD, #161F32);
+    width: 220px;
+    height: 45px;
+    border-radius: 12px;
+    gap: 8px;
     color: white;
-    font-weight: 50;
-    padding: 0 10px;
+    font-weight: 600;
+    padding: 0 15px;
+    font-size: 18px;
 }
 
 .cadastro-estagiario fieldset legend img {
@@ -72,38 +80,119 @@
 
 .cadastro-estagiario fieldset input {
     width: 100%;
-    max-width: 300px;
-    height: 40px;
-    border-radius: 5px;
-    border: 2px solid #131C2F;
-    padding: 0 10px;
+    max-width: 320px;
+    height: 45px;
+    border-radius: 10px;
+    border: 2px solid #EAD1B9;
+    padding: 0 15px;
     box-sizing: border-box;
+    background: #FFFFFF;
+    color: #131C2F;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(22, 31, 50, 0.05);
+}
+
+.cadastro-estagiario fieldset input:focus {
+    outline: none;
+    border-color: #161F32;
+    box-shadow: 0 0 0 3px rgba(22, 31, 50, 0.1), 0 5px 15px rgba(22, 31, 50, 0.1);
+    background: #FFFFFF;
 }
 
 .cadastro-estagiario fieldset select {
     width: 100%;
-    max-width: 310px;
-    height: 40px;
-    border-radius: 5px;
-    border: 2px solid #131C2F;
-    padding: 0 10px;
+    max-width: 320px;
+    height: 45px;
+    border-radius: 10px;
+    border: 2px solid #EAD1B9;
+    padding: 0 15px;
     box-sizing: border-box;
+    background: #FFFFFF;
+    color: #131C2F;
+    transition: all 0.3s ease;
 }
 
 .cadastro-estagiario button {
-    background: #EAD1B9;
-    width: 17rem;
-    height: 40px;
-    font-family: skillFontItalico;
-    font-size: 20px;
+    background: linear-gradient(135deg, #EA582C, #F47C2A);
+    width: 18rem;
+    height: 48px;
+    font-family: skillFontNormal;
+    font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
     border: none;
-    border-radius: 10px;
-    margin: 10px 0;
+    border-radius: 12px;
+    margin: 15px 0;
+    color: white;
+    box-shadow: 0 5px 15px rgba(234, 88, 44, 0.3);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .cadastro-estagiario button:hover {
-    background: #5D82AD;
+    background: linear-gradient(135deg, #F47C2A, #EA582C);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(234, 88, 44, 0.4);
+}
+
+.login-link-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link-container p {
+    color: #131C2F;
+    font-size: 16px;
+}
+
+.login-link-container a {
+    color: #5D82AD;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.login-link-container a:hover {
+    color: #161F32;
+    text-decoration: underline;
+}
+
+/* Background elements */
+.background-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(234, 209, 185, 0.1) 0%, rgba(244, 124, 42, 0.05) 100%);
+    filter: blur(20px);
+}
+
+.circle-1 {
+    width: 200px;
+    height: 200px;
+    top: 10%;
+    left: 5%;
+}
+
+.circle-2 {
+    width: 150px;
+    height: 150px;
+    bottom: 15%;
+    right: 10%;
+}
+
+.circle-3 {
+    width: 100px;
+    height: 100px;
+    top: 40%;
+    right: 15%;
 }
 
 @media (max-width: 768px) {
@@ -114,5 +203,9 @@
     .cadastro-estagiario fieldset input,
     .cadastro-estagiario fieldset select {
         max-width: 100%;
+    }
+    
+    .circle {
+        display: none;
     }
 }

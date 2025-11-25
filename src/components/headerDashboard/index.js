@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { LogOut } from 'lucide-react';
 import './styles.css';
 
 function HeaderDashboard() {
@@ -18,7 +19,10 @@ function HeaderDashboard() {
         <div className="hd-user">
           <span className="hd-username">{user?.nome ?? user?.username ?? 'Usuário'}</span>
         </div>
-        <button className="hd-logout" onClick={logout}>Sair</button>
+        <button className="hd-logout" onClick={logout}>
+          <LogOut size={16} />
+          <span>Sair</span>
+        </button>
       </div>
     </header>
   );

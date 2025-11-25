@@ -13,11 +13,11 @@ function Inicial() {
       <main className="main-inicial">
         <div className="hero-section">
           <div className="hero-content">
-            <div className="hero-badge">
+            {/* <div className="hero-badge">
               <span className="badge-text">NOVO</span>
               <span className="badge-divider">•</span>
               <span className="badge-highlight">Versão 2.0 disponível</span>
-            </div>
+            </div> */}
             <h1 className="hero-title">Gerencie suas <span className="highlight">habilidades</span> de forma inteligente</h1>
             <p className="hero-description">
               Transforme seu potencial em resultados concretos. Nosso sistema inteligente ajuda você a identificar, 

@@ -1,5 +1,9 @@
 import { useNavigate } from 'react-router-dom';
+import { Users, GraduationCap, User } from 'lucide-react';
 import './styles.css'
+import estagiarioIcon from '../../assets/images/icone-estagiario.png';
+import faculdadeIcon from '../../assets/images/icone-faculdade.png';
+import funcionarioIcon from '../../assets/images/icone-funcionario.png';
 
 function Cadastro() {
     const navigate = useNavigate();
@@ -19,7 +23,7 @@ function Cadastro() {
                 <div className="cards">
                     <div className="card-escolha">
                         <div>
-                            <img src='./assets/images/icone-estagiario.png' alt="icone-estagiario" />
+                            <img src={estagiarioIcon} alt="icone-estagiario" />
                         </div>
                         <h2>Estagiário</h2>
                         <aside>Cadastro para estudantes em estágio</aside>
@@ -28,7 +32,7 @@ function Cadastro() {
                     </div>
                     <div className="card-escolha">
                         <div>
-                            <img src='./assets/images/icone-faculdade.png' alt="icone-faculdade" />
+                            <img src={faculdadeIcon} alt="icone-faculdade" />
                         </div>
                         <h2>Faculdade</h2>
                         <aside>Cadastro de instituição de ensino</aside>
@@ -37,12 +41,66 @@ function Cadastro() {
                     </div>
                     <div className="card-escolha">
                         <div>
-                            <img src='./assets/images/icone-funcionario.png' alt="icone-supervisor" />
+                            <img src={funcionarioIcon} alt="icone-supervisor" />
                         </div>
                         <h2>Supervisor</h2>
                         <aside>Cadastro de colaboradores da empresa</aside>
                         <br /> <br /><br />
                         <button onClick={irParaFuncionario}>Selecionar</button>
+                    </div>
+                </div>
+
+                {/* Features Section */}
+                <div className="features-section">
+                    <h2>Principais Funcionalidades</h2>
+                    <div className="features-grid">
+                        <div className="feature-card">
+                            <div className="feature-card-content">
+                                <div className="feature-icon-wrapper bg-primary-light">
+                                    <Users className="text-primary" size={24} />
+                                </div>
+                                <h3>Gestão Completa</h3>
+                                <p>
+                                    Controle total sobre estagiários e avaliações
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="feature-card">
+                            <div className="feature-card-content">
+                                <div className="feature-icon-wrapper bg-success-light">
+                                    <GraduationCap className="text-success" size={24} />
+                                </div>
+                                <h3>Feedbacks em Tempo Real</h3>
+                                <p>
+                                    Acompanhamento contínuo do desempenho
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="feature-card">
+                            <div className="feature-card-content">
+                                <div className="feature-icon-wrapper bg-warning-light">
+                                    <User className="text-warning" size={24} />
+                                </div>
+                                <h3>Relatórios Detalhados</h3>
+                                <p>
+                                    Análises e métricas de performance
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="feature-card">
+                            <div className="feature-card-content">
+                                <div className="feature-icon-wrapper bg-info-light">
+                                    <Users className="text-info" size={24} />
+                                </div>
+                                <h3>Interface Intuitiva</h3>
+                                <p>
+                                    Fácil de usar e responsivo
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

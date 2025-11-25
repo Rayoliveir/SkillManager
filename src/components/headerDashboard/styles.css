@@ -2,10 +2,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #131C2F;
-  color: #FEF8EC;
+  background: linear-gradient(90deg, var(--oxford-blue-2) 0%, var(--oxford-blue) 100%);
+  color: var(--floral-white-2);
   padding: 12px 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -25,13 +25,13 @@
 .hd-title h1 {
   margin: 0;
   font-size: 18px;
-  color: #FEF8EC;
+  color: var(--floral-white-2);
   font-weight: 300;
 }
 
 .hd-title span {
   display: block;
-  color: #F47C2A;
+  color: var(--pumpkin);
   font-size: 12px;
   font-weight: 300;
 }
@@ -46,7 +46,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  color: #FEF8EC;
+  color: var(--floral-white-2);
   font-size: 14px;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .hd-logout {
-  background-color: #EA582C;
+  background: linear-gradient(135deg, var(--flame) 0%, var(--pumpkin) 100%);
   color: #FFF;
   border: none;
   padding: 10px 16px;
@@ -63,11 +63,15 @@
   cursor: pointer;
   font-family: var(--fonte-normal);
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
 }
 
 .hd-logout:hover {
-  background-color: #F28D3B;
+  background: linear-gradient(135deg, var(--pumpkin) 0%, var(--flame) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 @media (max-width: 700px) {
