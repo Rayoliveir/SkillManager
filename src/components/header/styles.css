@@ -1,0 +1,256 @@
+@font-face {
+    font-family: skillFontNormal;
+    src: url(../../../public/assets/font/CoolveticaRgNormal.otf)
+}
+
+@font-face {
+    font-family: skillFontItalico;
+    src: url(../../../public/assets/font/CoolveticaRgItalico.otf);
+}
+
+h1 {
+    font-weight: 50;
+}
+
+header {
+    background-color: #131C2F;
+    color: white;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.nome__projeto {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+    font-family: skillFontNormal;
+    min-width: 200px;
+}
+
+.nome__projeto div img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.nome__projeto div {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.nome__projeto div h1 {
+    color: #FEF8EC;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.nome__projeto div aside {
+    color: #F47C2A;
+    font-size: 0.8rem;
+}
+
+.redes__sociais {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin-right: 20px;
+}
+
+.redes__sociais div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    margin: 0 10px;
+    vertical-align: middle;
+    background-color: #ffffff28;
+    border-radius: 50%;
+}
+
+.redes__sociais div img {
+    width: 27px;
+    height: 27px;
+}
+
+.navegacao {
+    background-color: #FEEFCF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    height: auto;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    order: 3;
+}
+
+.navegacao dl {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 0 20px;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.navegacao dl button {
+    background: none;
+    border: none;
+    padding: 10px 0;
+    cursor: pointer;
+    font-family: skillFontNormal;
+    font-size: 16px;
+    font-weight: 400;
+    color: #131C2F;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+}
+
+.navegacao dl button:focus {
+    color: #F47C2A;
+    border-bottom: 2px solid #F47C2A;
+}
+
+.navegacao dl button.active {
+    color: #F47C2A;
+    border-bottom: 2px solid #F47C2A;
+}
+
+.navegacao dl button:hover {
+    color: #F47C2A;
+}
+
+.navegacao dl button:focus {
+    outline: none;
+}
+
+/* Mobile menu toggle */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .navegacao dl {
+        gap: 1.5rem;
+    }
+    
+    .navegacao dl button {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 10px;
+    }
+    
+    .nome__projeto {
+        margin-left: 10px;
+    }
+    
+    .nome__projeto div h1 {
+        font-size: 1.3rem;
+    }
+    
+    .redes__sociais {
+        margin-right: 10px;
+    }
+    
+    .redes__sociais div {
+        height: 35px;
+        width: 35px;
+        margin: 0 5px;
+    }
+    
+    .redes__sociais div img {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .navegacao dl {
+        gap: 1rem;
+    }
+    
+    .navegacao dl button {
+        font-size: 14px;
+        padding: 8px 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .menu-toggle {
+        display: block;
+    }
+    
+    .navegacao {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #FEEFCF;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+    }
+    
+    .navegacao.active {
+        display: flex;
+    }
+    
+    .navegacao dl {
+        flex-direction: column;
+        align-items: stretch;
+        margin: 0;
+        gap: 0;
+    }
+    
+    .navegacao dl button {
+        width: 100%;
+        text-align: left;
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(19, 28, 47, 0.1);
+        font-size: 16px;
+    }
+    
+    .nome__projeto div h1 {
+        font-size: 1.2rem;
+    }
+    
+    .nome__projeto div aside {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .nome__projeto {
+        margin-left: 5px;
+    }
+    
+    .redes__sociais {
+        margin-right: 5px;
+    }
+    
+    .redes__sociais div {
+        height: 30px;
+        width: 30px;
+        margin: 0 3px;
+    }
+    
+    .redes__sociais div img {
+        width: 20px;
+        height: 20px;
+    }
+}
