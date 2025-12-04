@@ -1,0 +1,154 @@
+.pag_contato-container {
+    background-color: #FCF5EA;
+    min-height: 100vh;
+}
+
+.contato-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.contato-header {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.contato-header h1 {
+    color: #131C2F;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.contato-header .subtitle {
+    color: #F47C2A;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.contato-main {
+    display: flex;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.contact-info {
+    flex: 1;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.contact-info h2 {
+    color: #131C2F;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+}
+
+.info-item {
+    margin-bottom: 25px;
+}
+
+.info-item h3 {
+    color: #F47C2A;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.info-item p {
+    color: #535353;
+    font-size: 1rem;
+}
+
+.contact-form {
+    flex: 2;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.contact-form h2 {
+    color: #131C2F;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #131C2F;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #F47C2A;
+}
+
+.submit-btn {
+    background-color: #F47C2A;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #e06b1e;
+}
+
+.submit-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #c3e6cb;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .contato-header h1 {
+        font-size: 2.2rem;
+    }
+    
+    .contato-main {
+        flex-direction: column;
+    }
+}
