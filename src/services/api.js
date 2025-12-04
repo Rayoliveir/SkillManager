@@ -1,4 +1,9 @@
-const API_URL = 'http://localhost:8080';
+// --- CONFIGURAÇÃO DE URL INTELIGENTE ---
+// Se o site estiver rodando no Render (produção), usa a URL da nuvem.
+// Se estiver rodando no seu PC (desenvolvimento), usa localhost.
+const API_URL = process.env.NODE_ENV === 'production' 
+    ? 'https://skillmanager-api.onrender.com' 
+    : 'http://localhost:8080';
 
 const apiFetch = async (endpoint, options = {}) => {
     const token = localStorage.getItem('authToken');
