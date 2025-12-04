@@ -10,8 +10,10 @@ import java.util.Optional;
 @Repository
 public interface EstagiarioRepository extends JpaRepository<Estagiario, Long> {
     Optional<Estagiario> findByEmail(String email);
-    Optional<Estagiario> findByCpf(String cpf);
+
+    // Método essencial para o Dashboard do Supervisor
     List<Estagiario> findByEmpresaId(Long empresaId);
-    List<Estagiario> findByDadosAcademicos_Faculdade_Id(Long faculdadeId);
-    Optional<Estagiario> findByDadosAcademicos_Id(Long dadosAcademicosId);
+
+    boolean existsByEmail(String email);
+    boolean existsByCpf(String cpf);
 }
