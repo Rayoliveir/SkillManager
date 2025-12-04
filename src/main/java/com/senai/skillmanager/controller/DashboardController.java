@@ -1,5 +1,6 @@
 package com.senai.skillmanager.controller;
 
+import com.senai.skillmanager.dto.FaculdadeResponseDTO;
 import com.senai.skillmanager.model.empresa.Supervisor;
 import com.senai.skillmanager.model.estagiario.Estagiario;
 import com.senai.skillmanager.model.faculdade.Coordenador;
@@ -17,10 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -128,10 +126,29 @@ public class DashboardController {
                 dashCoordenador.put("dadosCoordenador", coordenadorService.toResponseDTO(coordenador.get()));
 
                 if (coordenador.get().getFaculdade() != null) {
-                    dashCoordenador.put("dadosFaculdade", coordenadorService.toFaculdadeResponseDTO(coordenador.get().getFaculdade()));
-                }
+                    FaculdadeResponseDTO faculdadeDTO = coordenadorService.toFaculdadeResponseDTO(coordenador.get().getFaculdade());
+                    dashCoordenador.put("dadosFaculdade", faculdadeDTO);
 
-                dashCoordenador.put("estagiarios", Collections.emptyList());
+                    // --- CORREÇÃO: BUSCAR ESTAGIÁRIOS DA FACULDADE ---
+                    try {
+                        Long faculdadeId = coordenador.get().getFaculdade().getId();
+                        // Usa o método que adicionamos no Repository na etapa anterior
+                        List<Estagiario> alunos = estagiarioRepository.findByDadosAcademicos_Faculdade_Id(faculdadeId);
+
+                        dashCoordenador.put("estagiarios", alunos.stream()
+                                .map(estagiarioService::toResponseDTO)
+                                .toList());
+
+                        dashCoordenador.put("totalEstagiarios", alunos.size());
+
+                    } catch (Exception e) {
+                        System.out.println("⚠️ [DASHBOARD] Erro ao buscar alunos da faculdade: " + e.getMessage());
+                        dashCoordenador.put("estagiarios", Collections.emptyList());
+                    }
+                    // -------------------------------------------------
+                } else {
+                    dashCoordenador.put("estagiarios", Collections.emptyList());
+                }
 
                 response.put("dashboardCoordenador", dashCoordenador);
                 return ResponseEntity.ok(response);

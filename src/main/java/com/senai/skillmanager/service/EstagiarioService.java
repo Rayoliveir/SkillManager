@@ -212,6 +212,8 @@ public class EstagiarioService {
     }
 
     public EstagiarioResponseDTO toResponseDTO(Estagiario entity) {
+        if (entity == null) return null; // Proteção extra
+
         EstagiarioResponseDTO dto = new EstagiarioResponseDTO();
         dto.setId(entity.getId());
         dto.setNome(entity.getNome());
@@ -253,8 +255,10 @@ public class EstagiarioService {
             dto.setDadosAcademicos(acadDto);
         }
 
+        // --- DADOS DE ESTÁGIO (Blindagem) ---
         Optional<DadosEstagio> dadosEstagio = dadosEstagioRepository.findByEstagiarioId(entity.getId());
-        dadosEstagio.ifPresent(d -> {
+        if (dadosEstagio.isPresent()) {
+            DadosEstagio d = dadosEstagio.get();
             DadosEstagioResponseDTO dadosDTO = new DadosEstagioResponseDTO();
             dadosDTO.setId(d.getId());
             dadosDTO.setTitulo(d.getTitulo());
@@ -265,8 +269,9 @@ public class EstagiarioService {
             dadosDTO.setTipoRemuneracao(d.getTipoRemuneracao());
             dadosDTO.setObservacoes(d.getObservacoes());
             dto.setDadosEstagio(dadosDTO);
-        });
+        }
 
+        // --- AVALIAÇÕES (Blindagem: nunca retorna null) ---
         List<Avaliacao> avaliacoes = avaliacaoRepository.findByEstagiario_Id(entity.getId());
         if (avaliacoes != null && !avaliacoes.isEmpty()) {
             List<AvaliacaoResponseDTO> avaliacoesDTO = avaliacoes.stream().map(av -> {
@@ -284,6 +289,8 @@ public class EstagiarioService {
                 return avDto;
             }).collect(Collectors.toList());
             dto.setAvaliacoes(avaliacoesDTO);
+        } else {
+            dto.setAvaliacoes(new java.util.ArrayList<>()); // Lista Vazia em vez de null
         }
 
         return dto;
