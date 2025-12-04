@@ -1,7 +1,6 @@
 package com.senai.skillmanager.controller;
 
 import com.senai.skillmanager.dto.EstagiarioResponseDTO;
-import com.senai.skillmanager.dto.FaculdadeResponseDTO;
 import com.senai.skillmanager.model.avaliacao.Avaliacao;
 import com.senai.skillmanager.model.competencia.Competencia;
 import com.senai.skillmanager.model.estagiario.DadosEstagio;
@@ -37,7 +36,7 @@ public class DashboardController {
     private final AvaliacaoRepository avaliacaoRepository;
     private final CompetenciaRepository competenciaRepository;
     private final EmpresaRepository empresaRepository;
-    private final DadosEstagioRepository dadosEstagioRepository; // Adicionado para corrigir o erro
+    private final DadosEstagioRepository dadosEstagioRepository;
 
     public DashboardController(EstagiarioRepository estagiarioRepository,
                                EstagiarioService estagiarioService,
@@ -81,15 +80,26 @@ public class DashboardController {
                 dashEstagiario.put("dadosEstagiario", dto);
                 dashEstagiario.put("avaliacoes", dto.getAvaliacoes() != null ? dto.getAvaliacoes() : Collections.emptyList());
 
-                // Busca Competências Reais
-                List<Competencia> competencias = competenciaRepository.findByEstagiarioId(estagiario.get().getId());
-                dashEstagiario.put("competencias", competencias);
+                // --- CORREÇÃO DO LOOP INFINITO & NOME DA SKILL ---
+                // Transforma a lista de entidades em uma lista de Mapas simples
+                List<Competencia> competenciasEntidade = competenciaRepository.findByEstagiarioId(estagiario.get().getId());
 
-                // Busca Dados do Estágio para verificar contrato
+                List<Map<String, Object>> competenciasSafe = competenciasEntidade.stream().map(c -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", c.getId());
+                    // MUDANÇA: Se c.getDescricao() não existe, usamos c.getNome()
+                    map.put("descricao", c.getNome());
+                    map.put("nivel", c.getNivel());
+                    return map;
+                }).collect(Collectors.toList());
+
+                dashEstagiario.put("competencias", competenciasSafe);
+                // ------------------------------------------------
+
                 Optional<DadosEstagio> dadosEstagio = dadosEstagioRepository.findByEstagiarioId(estagiario.get().getId());
 
-                // Conquistas (Gamificação)
-                List<Map<String, String>> conquistas = gerarConquistas(competencias, dto.getAvaliacoes(), dadosEstagio.isPresent());
+                // Gera as conquistas baseado nas listas seguras
+                List<Map<String, String>> conquistas = gerarConquistas(competenciasEntidade, dto.getAvaliacoes(), dadosEstagio.isPresent());
                 dashEstagiario.put("conquistas", conquistas);
 
                 response.put("dashboardEstagiario", dashEstagiario);
@@ -114,7 +124,6 @@ public class DashboardController {
                     dashSupervisor.put("estagiarios", listaEstagiarios.stream().map(estagiarioService::toResponseDTO).toList());
                     dashSupervisor.put("totalEstagiarios", listaEstagiarios.size());
 
-                    // Conta avaliações feitas por este supervisor
                     long totalAv = avaliacaoRepository.countBySupervisorId(supervisor.get().getId());
                     dashSupervisor.put("totalAvaliacoes", totalAv);
                 } else {
@@ -188,21 +197,20 @@ public class DashboardController {
         }
     }
 
-    // Método auxiliar corrigido (não acessa estagiario.getDadosEstagio)
     private List<Map<String, String>> gerarConquistas(List<Competencia> skills, List<?> avaliacoes, boolean temContrato) {
         List<Map<String, String>> lista = new ArrayList<>();
 
         if (!skills.isEmpty()) {
-            lista.add(Map.of("nome", "Aprendiz Dedicado", "descricao", "Cadastrou suas primeiras competências.", "icone", "Rocket"));
+            lista.add(Map.of("nome", "Aprendiz dedicado", "descricao", "Cadastrou suas primeiras competências.", "icone", "Rocket"));
         }
         if (skills.size() > 3) {
             lista.add(Map.of("nome", "Multitarefa", "descricao", "Domina mais de 3 habilidades técnicas.", "icone", "Layers"));
         }
         if (avaliacoes != null && !avaliacoes.isEmpty()) {
-            lista.add(Map.of("nome", "Primeiro Feedback", "descricao", "Recebeu a primeira avaliação oficial.", "icone", "MessageCircle"));
+            lista.add(Map.of("nome", "Primeiro feedback", "descricao", "Recebeu a primeira avaliação oficial.", "icone", "MessageCircle"));
         }
         if (temContrato) {
-            lista.add(Map.of("nome", "Contrato Fechado", "descricao", "Dados de estágio 100% preenchidos.", "icone", "Briefcase"));
+            lista.add(Map.of("nome", "Contrato fechado", "descricao", "Dados de estágio 100% preenchidos.", "icone", "Briefcase"));
         }
 
         return lista;
