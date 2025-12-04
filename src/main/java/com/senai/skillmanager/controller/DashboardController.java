@@ -1,6 +1,6 @@
 package com.senai.skillmanager.controller;
 
-import com.senai.skillmanager.dto.FaculdadeResponseDTO;
+import com.senai.skillmanager.dto.EstagiarioResponseDTO;
 import com.senai.skillmanager.model.empresa.Supervisor;
 import com.senai.skillmanager.model.estagiario.Estagiario;
 import com.senai.skillmanager.model.faculdade.Coordenador;
@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -52,17 +55,12 @@ public class DashboardController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não autenticado.");
         }
 
-        // Normaliza o e-mail para evitar erros de Case Sensitive
         String email = authentication.getName().toLowerCase();
-
         System.out.println("🔍 [DASHBOARD] Iniciando busca de dados para: " + email);
 
         try {
             // 1. Tenta encontrar como Estagiário
-            // Nota: O repository deve ter o método findByEmail ignorando case ou garantimos no cadastro
             Optional<Estagiario> estagiario = estagiarioRepository.findByEmail(email);
-
-            // Se não achou, tenta buscar pelo nome original caso o banco tenha salvo com maiúscula
             if (estagiario.isEmpty()) {
                 estagiario = estagiarioRepository.findByEmail(authentication.getName());
             }
@@ -71,8 +69,19 @@ public class DashboardController {
                 System.out.println("✅ [DASHBOARD] Perfil encontrado: ESTAGIARIO - ID: " + estagiario.get().getId());
                 Map<String, Object> response = new HashMap<>();
                 response.put("role", "ESTAGIARIO");
-                response.put("dashboardEstagiario", estagiarioService.toResponseDTO(estagiario.get()));
+
+                // --- CORREÇÃO AQUI: Montando a estrutura que o Front espera ---
+                Map<String, Object> dashEstagiario = new HashMap<>();
+                EstagiarioResponseDTO dto = estagiarioService.toResponseDTO(estagiario.get());
+
+                dashEstagiario.put("dadosEstagiario", dto); // O Front exige essa chave
+                dashEstagiario.put("avaliacoes", dto.getAvaliacoes()); // Extrai avaliações para a raiz do objeto
+                dashEstagiario.put("competencias", Collections.emptyList()); // Placeholder (evita erro undefined)
+                dashEstagiario.put("conquistas", Collections.emptyList());   // Placeholder
+
+                response.put("dashboardEstagiario", dashEstagiario);
                 return ResponseEntity.ok(response);
+                // -------------------------------------------------------------
             }
 
             // 2. Tenta encontrar como Supervisor
@@ -96,7 +105,6 @@ public class DashboardController {
                                 .stream().map(estagiarioService::toResponseDTO).toList());
                         dashSupervisor.put("totalEstagiarios", estagiarioRepository.findByEmpresaId(empresaId).size());
                     } catch (Exception e) {
-                        System.out.println("⚠️ [DASHBOARD] Erro ao buscar estagiários da empresa: " + e.getMessage());
                         dashSupervisor.put("estagiarios", Collections.emptyList());
                         dashSupervisor.put("totalEstagiarios", 0);
                     }
@@ -106,7 +114,6 @@ public class DashboardController {
                 }
 
                 dashSupervisor.put("totalAvaliacoes", 0);
-
                 response.put("dashboardSupervisor", dashSupervisor);
                 return ResponseEntity.ok(response);
             }
@@ -126,44 +133,31 @@ public class DashboardController {
                 dashCoordenador.put("dadosCoordenador", coordenadorService.toResponseDTO(coordenador.get()));
 
                 if (coordenador.get().getFaculdade() != null) {
-                    FaculdadeResponseDTO faculdadeDTO = coordenadorService.toFaculdadeResponseDTO(coordenador.get().getFaculdade());
-                    dashCoordenador.put("dadosFaculdade", faculdadeDTO);
-
-                    // --- CORREÇÃO: BUSCAR ESTAGIÁRIOS DA FACULDADE ---
+                    dashCoordenador.put("dadosFaculdade", coordenadorService.toFaculdadeResponseDTO(coordenador.get().getFaculdade()));
                     try {
                         Long faculdadeId = coordenador.get().getFaculdade().getId();
-                        // Usa o método que adicionamos no Repository na etapa anterior
-                        List<Estagiario> alunos = estagiarioRepository.findByDadosAcademicos_Faculdade_Id(faculdadeId);
-
-                        dashCoordenador.put("estagiarios", alunos.stream()
-                                .map(estagiarioService::toResponseDTO)
-                                .toList());
-
-                        dashCoordenador.put("totalEstagiarios", alunos.size());
-
+                        dashCoordenador.put("estagiarios", estagiarioRepository.findByDadosAcademicos_Faculdade_Id(faculdadeId)
+                                .stream().map(estagiarioService::toResponseDTO).toList());
+                        dashCoordenador.put("totalEstagiarios", estagiarioRepository.findByDadosAcademicos_Faculdade_Id(faculdadeId).size());
                     } catch (Exception e) {
-                        System.out.println("⚠️ [DASHBOARD] Erro ao buscar alunos da faculdade: " + e.getMessage());
                         dashCoordenador.put("estagiarios", Collections.emptyList());
+                        dashCoordenador.put("totalEstagiarios", 0);
                     }
-                    // -------------------------------------------------
                 } else {
                     dashCoordenador.put("estagiarios", Collections.emptyList());
+                    dashCoordenador.put("totalEstagiarios", 0);
                 }
 
                 response.put("dashboardCoordenador", dashCoordenador);
                 return ResponseEntity.ok(response);
             }
 
-            System.out.println("❌ [DASHBOARD] ERRO CRÍTICO: Usuário " + email + " autenticado mas não encontrado em NENHUMA tabela de perfil.");
-            // Retorna 404 para o front saber que não achou os dados
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Perfil de usuário não encontrado para o e-mail: " + email + ". Verifique se o cadastro foi concluído corretamente.");
+            System.out.println("❌ [DASHBOARD] ERRO CRÍTICO: Usuário " + email + " não encontrado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Perfil não encontrado.");
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("🔥 [DASHBOARD] EXCEPTION: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro interno no servidor ao carregar dashboard: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno: " + e.getMessage());
         }
     }
 }
