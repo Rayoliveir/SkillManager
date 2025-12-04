@@ -34,22 +34,48 @@ const apiFetch = async (endpoint, options = {}) => {
     return text ? JSON.parse(text) : {};
 };
 
+
 // --- Autenticação ---
 export const login = async (username, password) => {
+    // IMPORTANTE: Codifica para Base64 corretamente (com tratamento de UTF-8 se precisar)
     const token = btoa(`${username}:${password}`);
-    const response = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: { 'Authorization': `Basic ${token}`, 'Content-Type': 'application/json' },
-    });
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.mensagem || 'Email ou senha inválidos.');
+    
+    console.log("Tentando logar em:", `${API_URL}/login`); // LOG DE DEBUG
+
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 
+                'Authorization': `Basic ${token}`, 
+                'Content-Type': 'application/json' 
+            },
+        });
+
+        if (!response.ok) {
+            // Tenta ler o erro como JSON, se falhar lê como Texto
+            const errorText = await response.text();
+            console.error("Erro do servidor:", response.status, errorText); // LOG DE ERRO REAL
+            
+            try {
+                const errorJson = JSON.parse(errorText);
+                throw new Error(errorJson.mensagem || `Erro ${response.status}: ${response.statusText}`);
+            } catch (e) {
+                throw new Error(`Erro ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const data = await response.json();
+        // Salva token e dados
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', JSON.stringify(data));
+        return data;
+
+    } catch (error) {
+        console.error("Falha na requisição:", error);
+        throw error;
     }
-    const data = await response.json();
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('user', JSON.stringify(data));
-    return data;
 };
+
 
 export const logout = () => {
     localStorage.removeItem('authToken');
