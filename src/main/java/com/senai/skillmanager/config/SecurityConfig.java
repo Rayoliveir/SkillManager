@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -36,9 +37,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+
+        // --- CORREÇÃO DO CORS: LIBERA TUDO ---
+        // Em vez de "localhost:3000", usamos "*" para aceitar o Render
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "*"));
+        configuration.setAllowCredentials(true); // Permite credenciais
+        // -------------------------------------
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -47,7 +55,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults()) // Usa o bean corsConfigurationSource acima
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -61,10 +69,10 @@ public class SecurityConfig {
                         // Libera endpoint de LOGIN
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
 
-                        // --- LIBERA O ENDPOINT DE CONTATO ---
+                        // Libera endpoint de CONTATO
                         .requestMatchers(HttpMethod.POST, "/contato").permitAll()
-                        // ------------------------------------
 
+                        // Qualquer outra requisição precisa de token
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
