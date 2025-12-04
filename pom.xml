@@ -11,25 +11,10 @@
 	<artifactId>skillmanager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>skillmanager</name>
-	<description>Demo project for Spring Boot</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<description>TCC SkillManager Project</description>
+
 	<properties>
-		<java.version>23</java.version>
-		<maven.compiler.source>23</maven.compiler.source>
-		<maven.compiler.target>23</maven.compiler.target>
-	</properties>
+		<java.version>17</java.version> </properties>
 
 	<dependencies>
 		<dependency>
@@ -49,6 +34,7 @@
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
@@ -69,6 +55,9 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId> </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -76,16 +65,13 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -96,12 +82,6 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -112,5 +92,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
