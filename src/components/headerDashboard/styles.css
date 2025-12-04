@@ -1,0 +1,90 @@
+.hd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #131C2F;
+  color: #FEF8EC;
+  padding: 12px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  font-family: var(--fonte-normal);
+}
+
+.hd-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hd-logo {
+  height: 44px;
+}
+
+.hd-title h1 {
+  margin: 0;
+  font-size: 18px;
+  color: #FEF8EC;
+  font-weight: 300;
+}
+
+.hd-title span {
+  display: block;
+  color: #F47C2A;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.hd-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hd-user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: #FEF8EC;
+  font-size: 14px;
+}
+
+.hd-username {
+  font-weight: 300;
+}
+
+.hd-logout {
+  background-color: #EA582C;
+  color: #FFF;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--fonte-normal);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.hd-logout:hover {
+  background-color: #F28D3B;
+}
+
+@media (max-width: 700px) {
+  .hd-header {
+    padding: 10px 16px;
+  }
+  
+  .hd-title h1 {
+    font-size: 16px;
+  }
+  
+  .hd-user {
+    display: none;
+  }
+  
+  .hd-logout {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,246 @@
+.main-cadastro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+    font-family: skillFontNormal;
+}
+
+.escolha-cadastro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 5em;
+    gap: 4rem;
+}
+
+.escolha-cadastro .titulo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.escolha-cadastro .titulo h1 {
+    /* color: ; */
+    font-size: 40px;
+    margin: 0;
+}
+
+.escolha-cadastro .titulo p {
+    color: #F47C2A;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.cards {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+}
+.card-escolha {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #ffffff;
+    width: 300px;
+    height: 350px;
+    border-radius: 20px;
+    box-shadow: 10px 10px 20px 0 rgba(0, 0, 0, 0.1); 
+   
+}
+
+.card-escolha:hover {
+    
+    border: 2px solid #F59351;
+    box-shadow: 0px 0px 20px 7px #F59351;
+    transition: all 0.3s ease;
+    transform: scale(1.02);
+}
+
+.card-escolha div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 25px;
+    background: #131C2F; /* Changed from black to the project's dark blue */
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+}
+
+.card-escolha div svg {
+    color: white; /* Make the Lucide icons white */
+}
+
+.card-escolha h2 {
+    font-size: 30px;
+    font-weight: 50;
+    margin: 0;
+}
+
+.card-escolha aside {
+    color: gray;
+    font-size: 15px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.card-escolha button {
+    /* background: #131C2F; */
+    background: #030022;
+    color: white;
+    width: 230px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.card-escolha button:hover {
+    transform: scale(1.02);
+    background: #F59351;
+
+
+}
+
+/* Features Section */
+.features-section {
+    margin-top: 6rem;
+    text-align: center;
+}
+
+.features-section-header h1 {
+    color: #131C2F;
+    font-size: 3rem;
+    font-weight: 550;
+    margin-bottom: 10px;
+}
+
+.features-section-header .subtitle {
+    color: #F47C2A;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* .features-section h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #131C2F;
+    margin-bottom: 2rem;
+} */
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.feature-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(22, 31, 50, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(234, 209, 185, 0.3);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(22, 31, 50, 0.15);
+    border-color: rgba(234, 209, 185, 0.5);
+}
+
+.feature-card-content {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.feature-icon-wrapper {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+/* Feature icon colors using project palette */
+.bg-primary-light { background-color: rgba(93, 130, 173, 0.1); }
+.text-primary { color: #5D82AD; }
+
+.bg-success-light { background-color: rgba(145, 222, 165, 0.1); }
+.text-success { color: #91DEA5; }
+
+.bg-warning-light { background-color: rgba(245, 147, 81, 0.1); }
+.text-warning { color: #F59351; }
+
+.bg-info-light { background-color: rgba(155, 179, 190, 0.1); }
+.text-info { color: #9BB3BE; }
+
+.feature-card h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #131C2F;
+}
+
+.feature-card p {
+    font-size: 0.875rem;
+    color: #6B7280;
+}
+
+/* Responsive design for features section */
+@media (min-width: 1024px) {
+    .features-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .features-section {
+        margin-top: 4rem;
+    }
+    
+    .features-section h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .features-section {
+        margin-top: 3rem;
+    }
+    
+    .features-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .feature-card-content {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .features-section {
+        margin-top: 2rem;
+    }
+    
+    .features-section h2 {
+        font-size: 1.3rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,5 +1,5 @@
 # SkillManager
-Projeto de TCC do curso de Desenvolvimento de sistemas - Senai Dendezeiros
+Projeto de TCC do curso de Desenvolvimento de sistemas - Senai Dendezeios
 
 ## 💡 Sobre o Projeto
 
@@ -22,6 +22,7 @@ O **SkillManager** é uma plataforma web de gestão de estagiários desenvolvida
 - ✅ Feedback contínuo e relatórios de desempenho
 - ✅ Modelo de negócio baseado em SaaS (Software como Serviço)
 
+
   
 ## 📅 Progresso e Kanban
 
@@ -34,9 +35,9 @@ O progresso do projeto está sendo gerenciado via GitHub Projects (Kanban). As t
 - 
 ## 🛠️ Tecnologias Utilizadas (Em ánalise)
 
-- Frontend: React.js 
-- Backend: Java & SpringBoot
-- Banco de Dados: MySQL
+- Frontend: React.js (ou outro framework JS)
+- Backend: Node.js + Express
+- Banco de Dados: MongoDB ou PostgreSQL
 - Autenticação: JWT
 - Hospedagem: Vercel / Render / Railway
 
