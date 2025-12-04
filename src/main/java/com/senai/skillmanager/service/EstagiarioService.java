@@ -272,7 +272,7 @@ public class EstagiarioService {
         }
 
         // --- AVALIAÇÕES (Blindagem: nunca retorna null) ---
-        List<Avaliacao> avaliacoes = avaliacaoRepository.findByEstagiario_Id(entity.getId());
+        List<Avaliacao> avaliacoes = avaliacaoRepository.findByEstagiarioId(entity.getId());
         if (avaliacoes != null && !avaliacoes.isEmpty()) {
             List<AvaliacaoResponseDTO> avaliacoesDTO = avaliacoes.stream().map(av -> {
                 AvaliacaoResponseDTO avDto = new AvaliacaoResponseDTO();

@@ -80,7 +80,7 @@ public class AvaliacaoService {
 
         checkOwnership(null, estagiario, authentication);
 
-        List<Avaliacao> avaliacoes = avaliacaoRepository.findByEstagiario_Id(estagiarioId);
+        List<Avaliacao> avaliacoes = avaliacaoRepository.findByEstagiarioId(estagiarioId);
         return avaliacoes.stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
